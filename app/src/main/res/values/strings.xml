@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TeaPot</string>
+    <string name="default_temperature">75</string>
+</resources>
