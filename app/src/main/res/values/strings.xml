@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">TeaPot</string>
-    <string name="default_temperature">75</string>
+    <string name="TurnOfMode">ВЫКЛ</string>
+    <string name="AutoMode">АВТО</string>
+    <string name="HeatMode">НАГР</string>
+    <string name="current_temperature_title">текущая\nтемпература</string>
 </resources>
