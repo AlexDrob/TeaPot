@@ -6,4 +6,8 @@
     <string name="current_temperature_title">ТЕКУЩАЯ\nТЕМПЕРАТУРА</string>
     <string name="updatetemperaturesent">запрос обновления температуры
         был отослан</string>
+    <string name="ResendCommandHeader">Повторная отправка</string>
+    <string name="ResendCommandBody">Режим уже установлен. Выполнить повторную установку?</string>
+    <string name="dialogOkButton">OK</string>
+    <string name="dialogCancelButton">CANCEL</string>
 </resources>

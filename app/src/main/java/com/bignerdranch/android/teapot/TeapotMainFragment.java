@@ -3,6 +3,7 @@ package com.bignerdranch.android.teapot;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -77,6 +78,11 @@ public class TeapotMainFragment extends Fragment {
             public void onClick(View v) {
                 data.setCurrentMode(mode.ModeTurnOff);
                 ViewCurrentMode();
+
+                // вывод диалогового окна
+                DialogFragment newFragment = TeapotDialogFragment.newInstance(
+                        R.string.ResendCommandHeader, R.string.ResendCommandBody);
+                newFragment.show(getFragmentManager(), "dialog");
             }
         };
 
