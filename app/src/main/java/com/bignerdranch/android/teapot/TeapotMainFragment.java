@@ -58,12 +58,16 @@ public class TeapotMainFragment extends Fragment {
         mCurrentTemperatureView = (TextView) v.findViewById(R.id.CurrentTemperature);
 
         // обработаем нажатие на поле с целевой температурой
-        View.OnClickListener TargetTemperatureButton = new View.OnClickListener() {
+        View.OnLongClickListener TargetTemperatureButton = new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity().getApplicationContext(),
+            public boolean onLongClick(View v) {
+                Toast toast = Toast.makeText(getActivity().getApplicationContext(),
                         R.string.updatetemperaturesent,
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT);
+                TextView t = (TextView) toast.getView().findViewById(android.R.id.message);
+                if( t != null) t.setGravity(Gravity.CENTER);
+                toast.show();
+                return true;
             }
         };
 
@@ -135,7 +139,7 @@ public class TeapotMainFragment extends Fragment {
         mHeatButton.setOnClickListener(HeatButton);
 
         // Привяжем обработчик к нажатию на поле с целевой температурой
-        mTargetTemperatureView.setOnClickListener(TargetTemperatureButton);
+        mTargetTemperatureView.setOnLongClickListener(TargetTemperatureButton);
 
         // Отображаем активной кнопку с текущим режимом
         ViewCurrentMode();
@@ -206,13 +210,13 @@ public class TeapotMainFragment extends Fragment {
     private int CulculateNewTemperatureColor(int temperature) {
         int color[] = new int[3];
         if (temperature < 60) {
-            color[0] = 0; // red
-            color[1] = (int)((temperature - 20) * 6.3); // green
+            color[0] = ((temperature - 20) * 6); // red
+            color[1] = ((temperature - 20) * 6); // green
             color[2] = 0xFF - color[1]; // blue
         }
         else {
-            color[0] = (int)((temperature - 60) * 6.3); // red
-            color[1] = 0xFF - color[0]; // green
+            color[0] = 0xFF; // red
+            color[1] = 0xFF - ((temperature - 60) * 6); // green
             color[2] = 0; // blue
         }
         return Color.rgb(color[0],color[1],color[2]);
