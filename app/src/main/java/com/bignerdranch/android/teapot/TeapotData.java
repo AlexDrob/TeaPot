@@ -8,6 +8,7 @@ public class TeapotData {
 
     private static mode mCurrentMode;
     private static int mTargetTemperature;
+    private static float mCurrentTemperature;
 
     public static int getTargetTemperature() {
         return mTargetTemperature;
@@ -25,8 +26,17 @@ public class TeapotData {
         TeapotData.mCurrentMode = mCurrentMode;
     }
 
+    public static float getCurrentTemperature() {
+        return mCurrentTemperature;
+    }
+
+    public static void setCurrentTemperature(float mCurrentTemperature) {
+        TeapotData.mCurrentTemperature = mCurrentTemperature;
+    }
+
     public TeapotData() {
         mTargetTemperature = 70;
+        mCurrentTemperature = (float)27.0;
         mCurrentMode = mode.ModeTurnOff;
     }
 }

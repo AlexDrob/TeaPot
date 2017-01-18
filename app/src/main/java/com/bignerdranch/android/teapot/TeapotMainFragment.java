@@ -1,9 +1,11 @@
 package com.bignerdranch.android.teapot;
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by AREG on 17.01.2017.
@@ -26,6 +29,7 @@ public class TeapotMainFragment extends Fragment {
     private ImageButton mArrowLeft;
     private ImageButton mArrowRight;
     private TextView mTargetTemperatureView;
+    private TextView mCurrentTemperatureView;
 
     private TeapotData data;
 
@@ -50,7 +54,18 @@ public class TeapotMainFragment extends Fragment {
         mArrowRight = (ImageButton) v.findViewById(R.id.arrow_right);
         // найдем изображение текста, который выводит целевую температуру в чайнике
         mTargetTemperatureView = (TextView) v.findViewById(R.id.target_temperature);
-        mTargetTemperatureView.setText(String.valueOf(data.getTargetTemperature()));
+        // найдем изображение текста, который выводит текущую температуру в чайнике
+        mCurrentTemperatureView = (TextView) v.findViewById(R.id.CurrentTemperature);
+
+        // обработаем нажатие на поле с целевой температурой
+        View.OnClickListener TargetTemperatureButton = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity().getApplicationContext(),
+                        R.string.updatetemperaturesent,
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
 
         // обработаем нажатие на кнопку режима выключения
         View.OnClickListener TurnOffButton = new View.OnClickListener() {
@@ -89,6 +104,7 @@ public class TeapotMainFragment extends Fragment {
                 target_temperature -= 1;
                 data.setTargetTemperature(target_temperature);
                 mTargetTemperatureView.setText(String.valueOf(target_temperature));
+                UpdateTemperatureColor(mTargetTemperatureView, target_temperature);
                 Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
                         .toString() + "degrees");
             }
@@ -104,6 +120,7 @@ public class TeapotMainFragment extends Fragment {
                 int target_temperature = data.getTargetTemperature();
                 target_temperature += 1;
                 data.setTargetTemperature(target_temperature);
+                UpdateTemperatureColor(mTargetTemperatureView, target_temperature);
                 mTargetTemperatureView.setText(String.valueOf(target_temperature));
                 Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
                         .toString() + "degrees");
@@ -117,7 +134,19 @@ public class TeapotMainFragment extends Fragment {
         mAutoButton.setOnClickListener(AutoButton);
         mHeatButton.setOnClickListener(HeatButton);
 
+        // Привяжем обработчик к нажатию на поле с целевой температурой
+        mTargetTemperatureView.setOnClickListener(TargetTemperatureButton);
+
+        // Отображаем активной кнопку с текущим режимом
         ViewCurrentMode();
+
+        // Отображаем текущую целевую температуру
+        mTargetTemperatureView.setText(String.valueOf(data.getTargetTemperature()));
+        UpdateTemperatureColor(mTargetTemperatureView, data.getTargetTemperature());
+
+        // Отображаем текущую температуру
+        mCurrentTemperatureView.setText(String.valueOf(data.getCurrentTemperature()));
+        UpdateTemperatureColor(mCurrentTemperatureView, (int)data.getCurrentTemperature());
 
         return v;
     }
@@ -146,6 +175,11 @@ public class TeapotMainFragment extends Fragment {
         Log.d(TAG, "onDestroy() called");
     }
 
+    private void UpdateTemperatureColor(TextView mTextView, int temperature) {
+        int new_color = CulculateNewTemperatureColor(temperature);
+        mTextView.setTextColor(new_color);
+    }
+
     private void ViewCurrentMode() {
         switch (data.getCurrentMode())
         {
@@ -167,5 +201,20 @@ public class TeapotMainFragment extends Fragment {
                 mHeatButton.setBackgroundResource(R.drawable.turn_on_button);
                 break;
         }
+    }
+
+    private int CulculateNewTemperatureColor(int temperature) {
+        int color[] = new int[3];
+        if (temperature < 60) {
+            color[0] = 0; // red
+            color[1] = (int)((temperature - 20) * 6.3); // green
+            color[2] = 0xFF - color[1]; // blue
+        }
+        else {
+            color[0] = (int)((temperature - 60) * 6.3); // red
+            color[1] = 0xFF - color[0]; // green
+            color[2] = 0; // blue
+        }
+        return Color.rgb(color[0],color[1],color[2]);
     }
 }

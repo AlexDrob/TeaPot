@@ -3,5 +3,7 @@
     <string name="TurnOfMode">ВЫКЛ</string>
     <string name="AutoMode">АВТО</string>
     <string name="HeatMode">НАГР</string>
-    <string name="current_temperature_title">текущая\nтемпература</string>
+    <string name="current_temperature_title">ТЕКУЩАЯ\nТЕМПЕРАТУРА</string>
+    <string name="updatetemperaturesent">запрос обновления температуры
+        был отослан</string>
 </resources>
