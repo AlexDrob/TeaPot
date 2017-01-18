@@ -107,7 +107,7 @@ public class TeapotMainFragment extends Fragment {
                 int target_temperature = data.getTargetTemperature();
                 target_temperature -= 1;
                 data.setTargetTemperature(target_temperature);
-                mTargetTemperatureView.setText(String.valueOf(target_temperature));
+                mTargetTemperatureView.setText(String.valueOf(target_temperature) + (char) 0x00B0);
                 UpdateTemperatureColor(mTargetTemperatureView, target_temperature);
                 Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
                         .toString() + "degrees");
@@ -124,8 +124,8 @@ public class TeapotMainFragment extends Fragment {
                 int target_temperature = data.getTargetTemperature();
                 target_temperature += 1;
                 data.setTargetTemperature(target_temperature);
+                mTargetTemperatureView.setText(String.valueOf(target_temperature) + (char) 0x00B0);
                 UpdateTemperatureColor(mTargetTemperatureView, target_temperature);
-                mTargetTemperatureView.setText(String.valueOf(target_temperature));
                 Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
                         .toString() + "degrees");
             }
@@ -144,12 +144,15 @@ public class TeapotMainFragment extends Fragment {
         // Отображаем активной кнопку с текущим режимом
         ViewCurrentMode();
 
+        // Сожмем текст целевой температуры чтобы он влез на экран
+        mTargetTemperatureView.setTextScaleX((float)0.8);
+
         // Отображаем текущую целевую температуру
-        mTargetTemperatureView.setText(String.valueOf(data.getTargetTemperature()));
+        mTargetTemperatureView.setText(String.valueOf(data.getTargetTemperature()) + (char) 0x00B0);
         UpdateTemperatureColor(mTargetTemperatureView, data.getTargetTemperature());
 
         // Отображаем текущую температуру
-        mCurrentTemperatureView.setText(String.valueOf(data.getCurrentTemperature()));
+        mCurrentTemperatureView.setText(String.valueOf(data.getCurrentTemperature()) + (char) 0x00B0);
         UpdateTemperatureColor(mCurrentTemperatureView, (int)data.getCurrentTemperature());
 
         return v;
