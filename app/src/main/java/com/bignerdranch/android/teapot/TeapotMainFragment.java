@@ -23,6 +23,7 @@ import android.widget.Toast;
 public class TeapotMainFragment extends Fragment {
 
     private static final String TAG = "TeapotMainFragment";
+    private static final String CURRENT_TEMP = "CurrentTemperature";
     private static final String DialogResendMode = "dialogResendMode";
 
     private Button mTurnOffButton;
@@ -40,6 +41,12 @@ public class TeapotMainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate() called");
         data = new TeapotData();
+        // Восстанавливаем значение текущей температуры
+        if (savedInstanceState != null) {
+            float currentTemperature = savedInstanceState.getFloat(CURRENT_TEMP, data.getCurrentTemperature());
+            data.setCurrentTemperature(currentTemperature);
+            Log.d(TAG, "restored data");
+        }
     }
 
     @Override
@@ -178,6 +185,13 @@ public class TeapotMainFragment extends Fragment {
         ShowCurrentTemperature();
 
         return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.d(TAG, "onSaveInstanceState() called");
+        savedInstanceState.putFloat(CURRENT_TEMP, data.getCurrentTemperature());
     }
 
     @Override
