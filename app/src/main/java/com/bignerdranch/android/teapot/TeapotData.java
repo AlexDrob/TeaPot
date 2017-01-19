@@ -6,8 +6,13 @@ package com.bignerdranch.android.teapot;
 
 public class TeapotData {
 
+    private static final int mAbsTargetTemperatureMinLimit = 20;
+    private static final int mAbsTargetTemperatureMaxLimit = 99;
+
     private static mode mCurrentMode;
     private static int mTargetTemperature;
+    private static int mTargetTemperatureMinLimit;
+    private static int mTargetTemperatureMaxLimit;
     private static float mCurrentTemperature;
 
     public static int getTargetTemperature() {
@@ -34,9 +39,35 @@ public class TeapotData {
         TeapotData.mCurrentTemperature = mCurrentTemperature;
     }
 
+    public static int getTargetTemperatureMinLimit() {
+        return mTargetTemperatureMinLimit;
+    }
+
+    public static void setTargetTemperatureMinLimit(int mTargetTemperatureMinLimit) {
+        TeapotData.mTargetTemperatureMinLimit = mTargetTemperatureMinLimit;
+    }
+
+    public static int getTargetTemperatureMaxLimit() {
+        return mTargetTemperatureMaxLimit;
+    }
+
+    public static void setTargetTemperatureMaxLimit(int mTargetTemperatureMaxLimit) {
+        TeapotData.mTargetTemperatureMaxLimit = mTargetTemperatureMaxLimit;
+    }
+
+    public static int getAbsTargetTemperatureMinLimit() {
+        return mAbsTargetTemperatureMinLimit;
+    }
+
+    public static int getAbsTargetTemperatureMaxLimit() {
+        return mAbsTargetTemperatureMaxLimit;
+    }
+
     public TeapotData() {
         mTargetTemperature = 70;
         mCurrentTemperature = (float)27.0;
         mCurrentMode = mode.ModeTurnOff;
+        mTargetTemperatureMinLimit = mAbsTargetTemperatureMinLimit;
+        mTargetTemperatureMaxLimit = mAbsTargetTemperatureMaxLimit;
     }
 }

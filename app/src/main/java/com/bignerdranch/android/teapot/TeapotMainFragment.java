@@ -23,6 +23,7 @@ import android.widget.Toast;
 public class TeapotMainFragment extends Fragment {
 
     private static final String TAG = "TeapotMainFragment";
+    private static final String DialogResendMode = "dialogResendMode";
 
     private Button mTurnOffButton;
     private Button mAutoButton;
@@ -76,13 +77,13 @@ public class TeapotMainFragment extends Fragment {
         View.OnClickListener TurnOffButton = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                data.setCurrentMode(mode.ModeTurnOff);
-                ViewCurrentMode();
-
-                // вывод диалогового окна
-                DialogFragment newFragment = TeapotDialogFragment.newInstance(
-                        R.string.ResendCommandHeader, R.string.ResendCommandBody);
-                newFragment.show(getFragmentManager(), "dialog");
+                if (data.getCurrentMode() == mode.ModeTurnOff) {
+                    ShowDialogForResendMode(); // вывод диалогового окна
+                }
+                else {
+                    data.setCurrentMode(mode.ModeTurnOff);
+                    ViewCurrentMode();
+                }
             }
         };
 
@@ -90,8 +91,13 @@ public class TeapotMainFragment extends Fragment {
         View.OnClickListener AutoButton = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                data.setCurrentMode(mode.ModeAuto);
-                ViewCurrentMode();
+                if (data.getCurrentMode() == mode.ModeAuto) {
+                    ShowDialogForResendMode(); // вывод диалогового окна
+                }
+                else {
+                    data.setCurrentMode(mode.ModeAuto);
+                    ViewCurrentMode();
+                }
             }
         };
 
@@ -99,8 +105,13 @@ public class TeapotMainFragment extends Fragment {
         View.OnClickListener HeatButton = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                data.setCurrentMode(mode.ModeHeat);
-                ViewCurrentMode();
+                if (data.getCurrentMode() == mode.ModeHeat) {
+                    ShowDialogForResendMode(); // вывод диалогового окна
+                }
+                else {
+                    data.setCurrentMode(mode.ModeHeat);
+                    ViewCurrentMode();
+                }
             }
         };
         // обработаем нажатие на кнопку уменьшения температуры
@@ -111,12 +122,16 @@ public class TeapotMainFragment extends Fragment {
                 Log.d(TAG, "Old target temperature: " + mTargetTemperatureView.getText()
                         .toString() + "degrees");
                 int target_temperature = data.getTargetTemperature();
-                target_temperature -= 1;
-                data.setTargetTemperature(target_temperature);
-                mTargetTemperatureView.setText(String.valueOf(target_temperature) + (char) 0x00B0);
-                UpdateTemperatureColor(mTargetTemperatureView, target_temperature);
-                Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
-                        .toString() + "degrees");
+                if (target_temperature == data.getTargetTemperatureMinLimit()) {
+                    ShowDialogForResendTemperature(); // вывод диалогового окна
+                }
+                else {
+                    target_temperature -= 1;
+                    data.setTargetTemperature(target_temperature);
+                    ShowTargetTemperature();
+                    Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
+                            .toString() + "degrees");
+                }
             }
         };
 
@@ -128,12 +143,16 @@ public class TeapotMainFragment extends Fragment {
                 Log.d(TAG, "Old target temperature: " + mTargetTemperatureView.getText()
                         .toString() + "degrees");
                 int target_temperature = data.getTargetTemperature();
-                target_temperature += 1;
-                data.setTargetTemperature(target_temperature);
-                mTargetTemperatureView.setText(String.valueOf(target_temperature) + (char) 0x00B0);
-                UpdateTemperatureColor(mTargetTemperatureView, target_temperature);
-                Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
-                        .toString() + "degrees");
+                if (target_temperature == data.getTargetTemperatureMaxLimit()) {
+                    ShowDialogForResendTemperature(); // вывод диалогового окна
+                }
+                else {
+                    target_temperature += 1;
+                    data.setTargetTemperature(target_temperature);
+                    ShowTargetTemperature();
+                    Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
+                            .toString() + "degrees");
+                }
             }
         };
 
@@ -154,12 +173,9 @@ public class TeapotMainFragment extends Fragment {
         mTargetTemperatureView.setTextScaleX((float)0.8);
 
         // Отображаем текущую целевую температуру
-        mTargetTemperatureView.setText(String.valueOf(data.getTargetTemperature()) + (char) 0x00B0);
-        UpdateTemperatureColor(mTargetTemperatureView, data.getTargetTemperature());
-
+        ShowTargetTemperature();
         // Отображаем текущую температуру
-        mCurrentTemperatureView.setText(String.valueOf(data.getCurrentTemperature()) + (char) 0x00B0);
-        UpdateTemperatureColor(mCurrentTemperatureView, (int)data.getCurrentTemperature());
+        ShowCurrentTemperature();
 
         return v;
     }
@@ -186,6 +202,14 @@ public class TeapotMainFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "onDestroy() called");
+    }
+
+    public void doPositiveClick() {
+        Log.d(TAG, "dialogOkButton called");
+    }
+
+    public void doNegativeClick() {
+        Log.d(TAG, "dialogCancelButton called");
     }
 
     private void UpdateTemperatureColor(TextView mTextView, int temperature) {
@@ -229,5 +253,31 @@ public class TeapotMainFragment extends Fragment {
             color[2] = 0; // blue
         }
         return Color.rgb(color[0],color[1],color[2]);
+    }
+
+    // Отображаем текущую целевую температуру
+    private void ShowTargetTemperature() {
+        mTargetTemperatureView.setText(String.valueOf(data.getTargetTemperature()) + (char) 0x00B0);
+        UpdateTemperatureColor(mTargetTemperatureView, data.getTargetTemperature());
+    }
+
+    // Отображаем текущую температуру
+    private void ShowCurrentTemperature() {
+        mCurrentTemperatureView.setText(String.valueOf(data.getCurrentTemperature()) + (char) 0x00B0);
+        UpdateTemperatureColor(mCurrentTemperatureView, (int)data.getCurrentTemperature());
+    }
+
+    // вывод диалогового окна
+    private void ShowDialogForResendMode() {
+        DialogFragment newFragment = TeapotDialogFragment.newInstance(
+                R.string.ResendCommandHeader, R.string.ResendCommandBody);
+        newFragment.show(getFragmentManager(), DialogResendMode);
+    }
+
+    // вывод диалогового окна
+    private void ShowDialogForResendTemperature() {
+        DialogFragment newFragment = TeapotDialogFragment.newInstance(
+                R.string.ResendTemperatureHeader, R.string.ResendTemperatureBody);
+        newFragment.show(getFragmentManager(), DialogResendMode);
     }
 }

@@ -13,7 +13,6 @@ import android.util.Log;
 
 public class TeapotDialogFragment extends DialogFragment {
 
-    private static final String TAG = "TeapotDialogFragment";
     private static final String TITLE = "title";
     private static final String BODY = "body";
 
@@ -39,7 +38,7 @@ public class TeapotDialogFragment extends DialogFragment {
         builder.setPositiveButton(R.string.dialogOkButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "dialogOkButton called");
+                //TeapotMainFragment.doPositiveClick();
                 dialog.cancel();
             }
         });
@@ -47,7 +46,7 @@ public class TeapotDialogFragment extends DialogFragment {
         builder.setNegativeButton(R.string.dialogCancelButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "dialogCancelButton called");
+                //((TeapotDialogFragment)getActivity()).doNegativeClick();
                 dialog.cancel();
             }
         });
