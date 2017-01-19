@@ -1,5 +1,7 @@
 package com.bignerdranch.android.teapot;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +23,8 @@ import android.widget.Toast;
  */
 
 public class TeapotMainFragment extends Fragment {
+
+    private static final int REQUEST_RESEND = 1;
 
     private static final String TAG = "TeapotMainFragment";
     private static final String CURRENT_TEMP = "CurrentTemperature";
@@ -218,12 +222,23 @@ public class TeapotMainFragment extends Fragment {
         Log.d(TAG, "onDestroy() called");
     }
 
-    public void doPositiveClick() {
-        Log.d(TAG, "dialogOkButton called");
-    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-    public void doNegativeClick() {
-        Log.d(TAG, "dialogCancelButton called");
+        switch (requestCode) {
+            case REQUEST_RESEND:
+                if (resultCode == Activity.RESULT_OK) {
+                    Log.d(TAG, "dialogOkButton called");
+                }
+                else if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.d(TAG, "dialogCancelButton called");
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void UpdateTemperatureColor(TextView mTextView, int temperature) {
@@ -285,6 +300,7 @@ public class TeapotMainFragment extends Fragment {
     private void ShowDialogForResendMode() {
         DialogFragment newFragment = TeapotDialogFragment.newInstance(
                 R.string.ResendCommandHeader, R.string.ResendCommandBody);
+        newFragment.setTargetFragment(this, REQUEST_RESEND);
         newFragment.show(getFragmentManager(), DialogResendMode);
     }
 
@@ -292,6 +308,7 @@ public class TeapotMainFragment extends Fragment {
     private void ShowDialogForResendTemperature() {
         DialogFragment newFragment = TeapotDialogFragment.newInstance(
                 R.string.ResendTemperatureHeader, R.string.ResendTemperatureBody);
+        newFragment.setTargetFragment(this, REQUEST_RESEND);
         newFragment.show(getFragmentManager(), DialogResendMode);
     }
 }
