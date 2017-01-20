@@ -14,6 +14,7 @@ public class TeapotData {
     private static int mTargetTemperatureMinLimit;
     private static int mTargetTemperatureMaxLimit;
     private static float mCurrentTemperature;
+    private static String mWiFiName;
 
     public static int getTargetTemperature() {
         return mTargetTemperature;
@@ -63,10 +64,19 @@ public class TeapotData {
         return mAbsTargetTemperatureMaxLimit;
     }
 
+    public static String getWiFiName() {
+        return mWiFiName;
+    }
+
+    public static void setWiFiName(String mWiFiName) {
+        TeapotData.mWiFiName = mWiFiName;
+    }
+
     public TeapotData() {
         mTargetTemperature = 70;
         mCurrentTemperature = (float)27.0;
         mCurrentMode = mode.ModeTurnOff;
+        mWiFiName = "\"eCozy24Gh\"";
         mTargetTemperatureMinLimit = mAbsTargetTemperatureMinLimit;
         mTargetTemperatureMaxLimit = mAbsTargetTemperatureMaxLimit;
     }

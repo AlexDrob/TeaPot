@@ -9,7 +9,17 @@
     <string name="ResendCommandHeader">Повторная установка</string>
     <string name="ResendCommandBody">Режим уже установлен. Выполнить повторную установку?</string>
     <string name="ResendTemperatureHeader">Повторная установка</string>
-    <string name="ResendTemperatureBody">Температура уже установлена. Выполнить повторную установку?</string>
+    <string name="ResendTemperatureBody">Температура уже установлена. Выполнить повторную
+        установку?</string>
+    <string name="WiFiTurnOffHeader">WiFi выключен</string>
+    <string name="WiFiTurnOffBody">Приложение будет работать в демо-режиме. Для полного режима
+        включите WiFi и зайдите в приложение снова</string>
+    <string name="WiFiNetworkAbsentHeader">Нет WiFi сети</string>
+    <string name="WiFiNetworkAbsentBody">Приложение будет работать в демо-режиме. Для полного режима
+        подключитесь к WiFi сети и зайдите в приложение снова</string>
+    <string name="WiFiNetworkWrongHeader">Неверная WiFi сеть</string>
+    <string name="WiFiNetworkWrongBody">Приложение будет работать в демо-режиме. Для полного режима
+        подключитесь к WiFi сети с устройством и зайдите в приложение снова</string>
     <string name="dialogOkButton">OK</string>
     <string name="dialogCancelButton">CANCEL</string>
 </resources>

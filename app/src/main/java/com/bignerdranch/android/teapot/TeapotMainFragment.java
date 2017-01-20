@@ -25,10 +25,16 @@ import android.widget.Toast;
 public class TeapotMainFragment extends Fragment {
 
     private static final int REQUEST_RESEND = 1;
+    private static final int REQUEST_WIFI_OFF = 2;
+    private static final int REQUEST_WIFI_ABSENT = 3;
+    private static final int REQUEST_WIFI_WRONG = 4;
 
     private static final String TAG = "TeapotMainFragment";
     private static final String CURRENT_TEMP = "CurrentTemperature";
     private static final String DialogResendMode = "dialogResendMode";
+    private static final String DialogWiFiIsOff = "dialogWiFiIsOff";
+    private static final String DialogWiFiAbsent = "dialogWiFiNetworkIsAbsent";
+    private static final String DialogWiFiWrong = "dialogWiFiNetworkWrong";
 
     private Button mTurnOffButton;
     private Button mAutoButton;
@@ -40,11 +46,16 @@ public class TeapotMainFragment extends Fragment {
 
     private TeapotData data;
 
+    private TeapotWiFi mTeapotWiFi;
+
+    private boolean NetworkIsOk = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate() called");
         data = new TeapotData();
+        NetworkIsOk = false;
         // Восстанавливаем значение текущей температуры
         if (savedInstanceState != null) {
             float currentTemperature = savedInstanceState.getFloat(CURRENT_TEMP, data.getCurrentTemperature());
@@ -89,7 +100,8 @@ public class TeapotMainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (data.getCurrentMode() == mode.ModeTurnOff) {
-                    ShowDialogForResendMode(); // вывод диалогового окна
+                    ShowDialogWindow(R.string.ResendCommandHeader, R.string.ResendCommandBody,
+                            REQUEST_RESEND, DialogResendMode); // вывод диалогового окна
                 }
                 else {
                     data.setCurrentMode(mode.ModeTurnOff);
@@ -103,7 +115,8 @@ public class TeapotMainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (data.getCurrentMode() == mode.ModeAuto) {
-                    ShowDialogForResendMode(); // вывод диалогового окна
+                    ShowDialogWindow(R.string.ResendCommandHeader, R.string.ResendCommandBody,
+                            REQUEST_RESEND, DialogResendMode); // вывод диалогового окна
                 }
                 else {
                     data.setCurrentMode(mode.ModeAuto);
@@ -117,7 +130,8 @@ public class TeapotMainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (data.getCurrentMode() == mode.ModeHeat) {
-                    ShowDialogForResendMode(); // вывод диалогового окна
+                    ShowDialogWindow(R.string.ResendCommandHeader, R.string.ResendCommandBody,
+                            REQUEST_RESEND, DialogResendMode); // вывод диалогового окна
                 }
                 else {
                     data.setCurrentMode(mode.ModeHeat);
@@ -134,7 +148,9 @@ public class TeapotMainFragment extends Fragment {
                         .toString() + "degrees");
                 int target_temperature = data.getTargetTemperature();
                 if (target_temperature == data.getTargetTemperatureMinLimit()) {
-                    ShowDialogForResendTemperature(); // вывод диалогового окна
+                    ShowDialogWindow(R.string.ResendTemperatureHeader,
+                            R.string.ResendTemperatureBody, REQUEST_RESEND,
+                            DialogResendMode); // вывод диалогового окна
                 }
                 else {
                     target_temperature -= 1;
@@ -155,7 +171,9 @@ public class TeapotMainFragment extends Fragment {
                         .toString() + "degrees");
                 int target_temperature = data.getTargetTemperature();
                 if (target_temperature == data.getTargetTemperatureMaxLimit()) {
-                    ShowDialogForResendTemperature(); // вывод диалогового окна
+                    ShowDialogWindow(R.string.ResendTemperatureHeader,
+                            R.string.ResendTemperatureBody, REQUEST_RESEND,
+                            DialogResendMode); // вывод диалогового окна
                 }
                 else {
                     target_temperature += 1;
@@ -208,6 +226,35 @@ public class TeapotMainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume() called");
+        // проверяем состояние WiFi
+        mTeapotWiFi = new TeapotWiFi(getContext());
+        if (mTeapotWiFi.TeapotCurrentWiFiState() == false) {
+            Log.d(TAG, "WiFi is turn off");
+            ShowDialogWindow(R.string.WiFiTurnOffHeader, R.string.WiFiTurnOffBody,
+                    REQUEST_WIFI_OFF, DialogWiFiIsOff);
+        }
+        else {
+            Log.d(TAG, "WiFi is turn on");
+            if (mTeapotWiFi.TeapotIsConnectedToWiFi() == false) {
+                Log.d(TAG, "Device is not connected to WiFi network");
+                ShowDialogWindow(R.string.WiFiNetworkAbsentHeader, R.string.WiFiNetworkAbsentBody,
+                        REQUEST_WIFI_ABSENT, DialogWiFiAbsent);
+            }
+            else {
+                Log.d(TAG, "Device is connected to WiFi network");
+                Log.d(TAG, "WiFi network name - " + mTeapotWiFi.TeapotSSIDnetwork());
+                Log.d(TAG, "WiFi network name - " + data.getWiFiName());
+                if (mTeapotWiFi.TeapotSSIDnetwork().equals(data.getWiFiName())) {
+                    NetworkIsOk = true;
+                    Log.d(TAG, "Device is connected to correct WiFi network");
+                }
+                else {
+                    ShowDialogWindow(R.string.WiFiNetworkWrongHeader, R.string.WiFiNetworkWrongBody,
+                            REQUEST_WIFI_WRONG, DialogWiFiWrong);
+                    Log.d(TAG, "Device is connected to incorrect WiFi network");
+                }
+            }
+        }
     }
 
     @Override
@@ -236,13 +283,22 @@ public class TeapotMainFragment extends Fragment {
                 }
                 break;
 
+            case REQUEST_WIFI_OFF:
+            case REQUEST_WIFI_ABSENT:
+            case REQUEST_WIFI_WRONG:
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    Log.d(TAG, "dialogCancelButton called");
+                    getActivity().finish();
+                }
+                break;
+
             default:
                 break;
         }
     }
 
     private void UpdateTemperatureColor(TextView mTextView, int temperature) {
-        int new_color = CulculateNewTemperatureColor(temperature);
+        int new_color = CalculateNewTemperatureColor(temperature);
         mTextView.setTextColor(new_color);
     }
 
@@ -269,7 +325,7 @@ public class TeapotMainFragment extends Fragment {
         }
     }
 
-    private int CulculateNewTemperatureColor(int temperature) {
+    private int CalculateNewTemperatureColor(int temperature) {
         int color[] = new int[3];
         if (temperature < 60) {
             color[0] = ((temperature - 20) * 6); // red
@@ -297,18 +353,10 @@ public class TeapotMainFragment extends Fragment {
     }
 
     // вывод диалогового окна
-    private void ShowDialogForResendMode() {
+    private void ShowDialogWindow(int header, int messageBody, int requestCode, String label) {
         DialogFragment newFragment = TeapotDialogFragment.newInstance(
-                R.string.ResendCommandHeader, R.string.ResendCommandBody);
-        newFragment.setTargetFragment(this, REQUEST_RESEND);
-        newFragment.show(getFragmentManager(), DialogResendMode);
-    }
-
-    // вывод диалогового окна
-    private void ShowDialogForResendTemperature() {
-        DialogFragment newFragment = TeapotDialogFragment.newInstance(
-                R.string.ResendTemperatureHeader, R.string.ResendTemperatureBody);
-        newFragment.setTargetFragment(this, REQUEST_RESEND);
-        newFragment.show(getFragmentManager(), DialogResendMode);
+                header, messageBody);
+        newFragment.setTargetFragment(this, requestCode);
+        newFragment.show(getFragmentManager(), label);
     }
 }
