@@ -56,12 +56,6 @@ public class TeapotMainFragment extends Fragment {
         Log.d(TAG, "onCreate() called");
         data = new TeapotData(getContext());
         NetworkIsOk = false;
-        // Восстанавливаем значение текущей температуры
-        if (savedInstanceState != null) {
-            float currentTemperature = savedInstanceState.getFloat(CURRENT_TEMP, data.getCurrentTemperature());
-            data.setCurrentTemperature(currentTemperature);
-            Log.d(TAG, "restored data");
-        }
     }
 
     @Override
@@ -69,6 +63,13 @@ public class TeapotMainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.teapot_main_fragment, container, false);
         Log.d(TAG, "onCreateView() called");
+
+        // Восстанавливаем значение текущей температуры
+        if (savedInstanceState != null) {
+            float currentTemperature = savedInstanceState.getFloat(CURRENT_TEMP, data.getCurrentTemperature());
+            data.setCurrentTemperature(currentTemperature);
+            Log.d(TAG, "restored data");
+        }
 
         // найдем изображения кнопок
         mAutoButton = (Button) v.findViewById(R.id.auto_button);
@@ -181,6 +182,9 @@ public class TeapotMainFragment extends Fragment {
                     ShowTargetTemperature();
                     Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
                             .toString() + "degrees");
+
+                    TeapotTCPclient sendTCP = new TeapotTCPclient();
+                    sendTCP.Create(data.getCurrentMode(), data.getTargetTemperature());
                 }
             }
         };
