@@ -54,7 +54,7 @@ public class TeapotMainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate() called");
-        data = new TeapotData();
+        data = new TeapotData(getContext());
         NetworkIsOk = false;
         // Восстанавливаем значение текущей температуры
         if (savedInstanceState != null) {

@@ -1,10 +1,14 @@
 package com.bignerdranch.android.teapot;
 
+import android.content.Context;
+
 /**
  * Created by AREG on 17.01.2017.
  */
 
 public class TeapotData {
+
+    private TeapotSQLiteBase mTeapotBase;
 
     private static final int mAbsTargetTemperatureMinLimit = 20;
     private static final int mAbsTargetTemperatureMaxLimit = 99;
@@ -15,6 +19,7 @@ public class TeapotData {
     private static int mTargetTemperatureMaxLimit;
     private static float mCurrentTemperature;
     private static String mWiFiName;
+    private static int mWiFiIpAddress;
 
     public static int getTargetTemperature() {
         return mTargetTemperature;
@@ -72,12 +77,23 @@ public class TeapotData {
         TeapotData.mWiFiName = mWiFiName;
     }
 
-    public TeapotData() {
+    public static int getWiFiIpAddress() {
+        return mWiFiIpAddress;
+    }
+
+    public static void setWiFiIpAddress(int mWiFiIpAddress) {
+        TeapotData.mWiFiIpAddress = mWiFiIpAddress;
+    }
+
+    public TeapotData(Context context) {
         mTargetTemperature = 70;
         mCurrentTemperature = (float)27.0;
         mCurrentMode = mode.ModeTurnOff;
         mWiFiName = "\"eCozy24Gh\"";
+        mWiFiIpAddress = 0;
         mTargetTemperatureMinLimit = mAbsTargetTemperatureMinLimit;
         mTargetTemperatureMaxLimit = mAbsTargetTemperatureMaxLimit;
+
+        TeapotSQLiteBase mTeapotBase = new TeapotSQLiteBase(context);
     }
 }

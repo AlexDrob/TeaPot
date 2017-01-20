@@ -44,4 +44,8 @@ public class TeapotWiFi {
     public String TeapotSSIDnetwork() {
         return InfoWiFi.getSSID();
     }
+
+    public int TeapotGetOwnIpAddress() {
+        return InfoWiFi.getIpAddress();
+    }
 }
