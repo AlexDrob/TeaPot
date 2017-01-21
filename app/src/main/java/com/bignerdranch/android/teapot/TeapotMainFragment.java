@@ -107,6 +107,7 @@ public class TeapotMainFragment extends Fragment {
                 else {
                     data.setCurrentMode(mode.ModeTurnOff);
                     ViewCurrentMode();
+                    SendTcpCommandToTeapot();
                 }
             }
         };
@@ -122,6 +123,7 @@ public class TeapotMainFragment extends Fragment {
                 else {
                     data.setCurrentMode(mode.ModeAuto);
                     ViewCurrentMode();
+                    SendTcpCommandToTeapot();
                 }
             }
         };
@@ -137,6 +139,7 @@ public class TeapotMainFragment extends Fragment {
                 else {
                     data.setCurrentMode(mode.ModeHeat);
                     ViewCurrentMode();
+                    SendTcpCommandToTeapot();
                 }
             }
         };
@@ -159,6 +162,7 @@ public class TeapotMainFragment extends Fragment {
                     ShowTargetTemperature();
                     Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
                             .toString() + "degrees");
+                    SendTcpCommandToTeapot();
                 }
             }
         };
@@ -182,10 +186,7 @@ public class TeapotMainFragment extends Fragment {
                     ShowTargetTemperature();
                     Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
                             .toString() + "degrees");
-
-                    TeapotTCPasyncTask TcpTask = new TeapotTCPasyncTask();
-                    TcpTask.SetActivity(getActivity());
-                    TcpTask.execute(data);
+                    SendTcpCommandToTeapot();
                 }
             }
         };
@@ -281,10 +282,8 @@ public class TeapotMainFragment extends Fragment {
         switch (requestCode) {
             case REQUEST_RESEND:
                 if (resultCode == Activity.RESULT_OK) {
+                    SendTcpCommandToTeapot();
                     Log.d(TAG, "dialogOkButton called");
-                }
-                else if (resultCode == Activity.RESULT_CANCELED) {
-                    Log.d(TAG, "dialogCancelButton called");
                 }
                 break;
 
@@ -363,5 +362,13 @@ public class TeapotMainFragment extends Fragment {
                 header, messageBody);
         newFragment.setTargetFragment(this, requestCode);
         newFragment.show(getFragmentManager(), label);
+    }
+
+    private void SendTcpCommandToTeapot() {
+        if (NetworkIsOk == true) {
+            TeapotTCPasyncTask TcpTask = new TeapotTCPasyncTask();
+            TcpTask.SetActivity(getActivity());
+            TcpTask.execute(data);
+        }
     }
 }
