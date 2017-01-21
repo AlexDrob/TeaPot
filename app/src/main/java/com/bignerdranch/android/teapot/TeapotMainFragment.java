@@ -64,6 +64,10 @@ public class TeapotMainFragment extends Fragment {
         View v = inflater.inflate(R.layout.teapot_main_fragment, container, false);
         Log.d(TAG, "onCreateView() called");
 
+        // восстанавливаем данные
+        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
+        TeapotPreferences.TeapotReStoreData(data, getContext());
+
         // Восстанавливаем значение текущей температуры
         if (savedInstanceState != null) {
             float currentTemperature = savedInstanceState.getFloat(CURRENT_TEMP, data.getCurrentTemperature());
@@ -226,6 +230,9 @@ public class TeapotMainFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() called");
+        // сохраняем данные
+        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
+        TeapotPreferences.TeapotStoreData(data, getContext());
     }
 
     @Override

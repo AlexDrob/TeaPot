@@ -8,8 +8,6 @@ import android.content.Context;
 
 public class TeapotData {
 
-    private TeapotSQLiteBase mTeapotBase;
-
     private static final int mAbsTargetTemperatureMinLimit = 20;
     private static final int mAbsTargetTemperatureMaxLimit = 99;
 
@@ -19,7 +17,7 @@ public class TeapotData {
     private static int mTargetTemperatureMaxLimit;
     private static float mCurrentTemperature;
     private static String mWiFiName;
-    private static int mWiFiIpAddress;
+    private static String mWiFiIpAddress;
 
     public static int getTargetTemperature() {
         return mTargetTemperature;
@@ -77,11 +75,11 @@ public class TeapotData {
         TeapotData.mWiFiName = mWiFiName;
     }
 
-    public static int getWiFiIpAddress() {
+    public static String getWiFiIpAddress() {
         return mWiFiIpAddress;
     }
 
-    public static void setWiFiIpAddress(int mWiFiIpAddress) {
+    public static void setWiFiIpAddress(String mWiFiIpAddress) {
         TeapotData.mWiFiIpAddress = mWiFiIpAddress;
     }
 
@@ -90,10 +88,8 @@ public class TeapotData {
         mCurrentTemperature = (float)27.0;
         mCurrentMode = mode.ModeTurnOff;
         mWiFiName = "\"eCozy24Gh\"";
-        mWiFiIpAddress = 0;
+        mWiFiIpAddress = "";
         mTargetTemperatureMinLimit = mAbsTargetTemperatureMinLimit;
         mTargetTemperatureMaxLimit = mAbsTargetTemperatureMaxLimit;
-
-        TeapotSQLiteBase mTeapotBase = new TeapotSQLiteBase(context);
     }
 }
