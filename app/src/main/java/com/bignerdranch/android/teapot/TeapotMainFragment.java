@@ -183,8 +183,9 @@ public class TeapotMainFragment extends Fragment {
                     Log.d(TAG, "New target temperature: " + mTargetTemperatureView.getText()
                             .toString() + "degrees");
 
-                    TeapotTCPclient sendTCP = new TeapotTCPclient();
-                    sendTCP.Create(data.getCurrentMode(), data.getTargetTemperature());
+                    TeapotTCPasyncTask TcpTask = new TeapotTCPasyncTask();
+                    TcpTask.SetActivity(getActivity());
+                    TcpTask.execute(data);
                 }
             }
         };

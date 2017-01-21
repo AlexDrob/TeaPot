@@ -4,8 +4,7 @@
     <string name="AutoMode">АВТО</string>
     <string name="HeatMode">НАГР</string>
     <string name="current_temperature_title">ТЕКУЩАЯ\nТЕМПЕРАТУРА</string>
-    <string name="updatetemperaturesent">запрос обновления температуры
-        был отослан</string>
+    <string name="updatetemperaturesent">запрос обновления температуры был отослан</string>
     <string name="ResendCommandHeader">Повторная установка</string>
     <string name="ResendCommandBody">Режим уже установлен. Выполнить повторную установку?</string>
     <string name="ResendTemperatureHeader">Повторная установка</string>
@@ -22,4 +21,6 @@
         подключитесь к WiFi сети с устройством и зайдите в приложение снова</string>
     <string name="dialogOkButton">OK</string>
     <string name="dialogCancelButton">CANCEL</string>
+    <string name="TCPsendFail">Запрос обновления температуры и режима не был отослан.
+        Проверьте устойство и WiFi сеть</string>
 </resources>
