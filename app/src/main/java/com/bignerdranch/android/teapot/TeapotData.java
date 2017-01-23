@@ -87,8 +87,8 @@ public class TeapotData {
         mTargetTemperature = 70;
         mCurrentTemperature = (float)27.0;
         mCurrentMode = mode.ModeTurnOff;
-        mWiFiName = "\"eCozy24Gh\"";
-        mWiFiIpAddress = "";
+        mWiFiName = "eCozy24Gh";
+        mWiFiIpAddress = "192.168.1.103";
         mTargetTemperatureMinLimit = mAbsTargetTemperatureMinLimit;
         mTargetTemperatureMaxLimit = mAbsTargetTemperatureMaxLimit;
     }

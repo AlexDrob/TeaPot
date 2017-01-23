@@ -147,6 +147,7 @@ public class TeapotMainFragment extends Fragment {
                 }
             }
         };
+
         // обработаем нажатие на кнопку уменьшения температуры
         View.OnClickListener MinusButton = new View.OnClickListener() {
             @Override
@@ -256,8 +257,9 @@ public class TeapotMainFragment extends Fragment {
             else {
                 Log.d(TAG, "Device is connected to WiFi network");
                 Log.d(TAG, "WiFi network name - " + mTeapotWiFi.TeapotSSIDnetwork());
-                Log.d(TAG, "WiFi network name - " + data.getWiFiName());
-                if (mTeapotWiFi.TeapotSSIDnetwork().equals(data.getWiFiName())) {
+                String WiFiName = "\"" + data.getWiFiName() + "\"";
+                Log.d(TAG, "WiFi network name - " + WiFiName);
+                if (mTeapotWiFi.TeapotSSIDnetwork().equals(WiFiName)) {
                     NetworkIsOk = true;
                     Log.d(TAG, "Device is connected to correct WiFi network");
                 }

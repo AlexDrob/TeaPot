@@ -36,4 +36,8 @@
     <string name="menu">Меню</string>
     <string name="open_menu">Open</string>
     <string name="close_menu">Close</string>
+
+    <string name="WiFiNameTitle">SSID WiFi в которой находится устройство</string>
+    <string name="WiFiIpAddressTitle">Текущий Ip адрес устройства в сети</string>
+
 </resources>

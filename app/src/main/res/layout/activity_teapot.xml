@@ -8,10 +8,9 @@
     tools:ignore="MergeRootFrame">
 
     <FrameLayout
-        android:id="@+id/teapot_main_frame_container"
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.bignerdranch.android.teapot.TeapotActivity">
+        android:layout_height="match_parent">
 
     </FrameLayout>
 
@@ -24,7 +23,6 @@
         android:choiceMode="singleChoice"
         android:divider="@color/list_divider"
         android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_selector"
         android:background="@color/list_background"/>
 
 </android.support.v4.widget.DrawerLayout>

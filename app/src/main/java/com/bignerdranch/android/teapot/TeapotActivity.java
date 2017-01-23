@@ -2,6 +2,7 @@ package com.bignerdranch.android.teapot;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -12,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class TeapotActivity extends ActionBarActivity {
 
@@ -54,10 +57,6 @@ public class TeapotActivity extends ActionBarActivity {
 
         myDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, viewsNames));
 
-        // enabling action bar app icon and behaving it as toggle button
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(false);
-
         myDrawerToggle = new ActionBarDrawerToggle(this, myDrawerLayout,
                 R.string.open_menu,
                 R.string.close_menu
@@ -76,20 +75,20 @@ public class TeapotActivity extends ActionBarActivity {
         };
         myDrawerLayout.setDrawerListener(myDrawerToggle);
 
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         myDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorTopGround)));
+
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.teapot_main_frame_container);
+        Fragment fragment = fm.findFragmentById(R.id.content_frame);
         if (fragment == null) {
             fragment = new TeapotMainFragment();
-            fm.beginTransaction().add(R.id.teapot_main_frame_container, fragment)
+            fm.beginTransaction().add(R.id.content_frame, fragment)
                     .commit();
         }
-
-        actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorTopGround)));
     }
 
     @Override
@@ -128,6 +127,28 @@ public class TeapotActivity extends ActionBarActivity {
             switch (position) {
                 case 0:
                     myDrawerLayout.closeDrawers();
+                    FragmentManager fm = getSupportFragmentManager();
+                    //Fragment fragment = fm.findFragmentById(R.id.content_frame);
+                    //if (fragment == null) {
+                    Fragment fragment = new TeapotMainFragment();
+                        fm.beginTransaction().replace(R.id.content_frame, fragment)
+                                .commit();
+                    //}
+                    break;
+                case 1:
+                    myDrawerLayout.closeDrawers();
+                    getSupportActionBar().setHomeButtonEnabled(false);
+                    FragmentManager fm1 = getSupportFragmentManager();
+                    //Fragment fragment1 = fm1.findFragmentById(R.id.teapot_settings_wifi_fragment_container);
+                    //if (fragment1 == null) {
+                    Fragment fragment1 = new TeapotSettingsWiFiFragment();
+                        fm1.beginTransaction().replace(R.id.content_frame, fragment1)
+                                .commit();
+
+                        myDrawerList.setItemChecked(position, true);
+                        myDrawerList.setSelection(position);
+                        setTitle(viewsNames[position]);
+                    //}
                     break;
                 case 5:
                     mActivity.finish();
