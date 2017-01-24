@@ -25,16 +25,11 @@ import android.widget.Toast;
 public class TeapotMainFragment extends Fragment {
 
     private static final int REQUEST_RESEND = 1;
-    private static final int REQUEST_WIFI_OFF = 2;
-    private static final int REQUEST_WIFI_ABSENT = 3;
-    private static final int REQUEST_WIFI_WRONG = 4;
 
     private static final String TAG = "TeapotMainFragment";
     private static final String CURRENT_TEMP = "CurrentTemperature";
     private static final String DialogResendMode = "dialogResendMode";
-    private static final String DialogWiFiIsOff = "dialogWiFiIsOff";
-    private static final String DialogWiFiAbsent = "dialogWiFiNetworkIsAbsent";
-    private static final String DialogWiFiWrong = "dialogWiFiNetworkWrong";
+    private static final String WIFI_STATE = "WiFi_state";
 
     private Button mTurnOffButton;
     private Button mAutoButton;
@@ -46,15 +41,12 @@ public class TeapotMainFragment extends Fragment {
 
     private TeapotData data;
 
-    private TeapotWiFi mTeapotWiFi;
-
     private boolean NetworkIsOk = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate() called");
-        data = new TeapotData(getContext());
         NetworkIsOk = false;
     }
 
@@ -64,16 +56,20 @@ public class TeapotMainFragment extends Fragment {
         View v = inflater.inflate(R.layout.teapot_main_fragment, container, false);
         Log.d(TAG, "onCreateView() called");
 
-        // восстанавливаем данные
-        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
-        TeapotPreferences.TeapotReStoreData(data, getContext());
-
         // Восстанавливаем значение текущей температуры
         if (savedInstanceState != null) {
             float currentTemperature = savedInstanceState.getFloat(CURRENT_TEMP, data.getCurrentTemperature());
             data.setCurrentTemperature(currentTemperature);
             Log.d(TAG, "restored data");
         }
+
+        Bundle bundle = this.getArguments();
+        NetworkIsOk = bundle.getBoolean(WIFI_STATE);
+
+        data = new TeapotData();
+        // восстанавливаем данные
+        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
+        TeapotPreferences.TeapotReStoreData(data, getContext());
 
         // найдем изображения кнопок
         mAutoButton = (Button) v.findViewById(R.id.auto_button);
@@ -240,36 +236,6 @@ public class TeapotMainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "onResume() called");
-        // проверяем состояние WiFi
-        mTeapotWiFi = new TeapotWiFi(getContext());
-        if (mTeapotWiFi.TeapotCurrentWiFiState() == false) {
-            Log.d(TAG, "WiFi is turn off");
-            ShowDialogWindow(R.string.WiFiTurnOffHeader, R.string.WiFiTurnOffBody,
-                    REQUEST_WIFI_OFF, DialogWiFiIsOff);
-        }
-        else {
-            Log.d(TAG, "WiFi is turn on");
-            if (mTeapotWiFi.TeapotIsConnectedToWiFi() == false) {
-                Log.d(TAG, "Device is not connected to WiFi network");
-                ShowDialogWindow(R.string.WiFiNetworkAbsentHeader, R.string.WiFiNetworkAbsentBody,
-                        REQUEST_WIFI_ABSENT, DialogWiFiAbsent);
-            }
-            else {
-                Log.d(TAG, "Device is connected to WiFi network");
-                Log.d(TAG, "WiFi network name - " + mTeapotWiFi.TeapotSSIDnetwork());
-                String WiFiName = "\"" + data.getWiFiName() + "\"";
-                Log.d(TAG, "WiFi network name - " + WiFiName);
-                if (mTeapotWiFi.TeapotSSIDnetwork().equals(WiFiName)) {
-                    NetworkIsOk = true;
-                    Log.d(TAG, "Device is connected to correct WiFi network");
-                }
-                else {
-                    ShowDialogWindow(R.string.WiFiNetworkWrongHeader, R.string.WiFiNetworkWrongBody,
-                            REQUEST_WIFI_WRONG, DialogWiFiWrong);
-                    Log.d(TAG, "Device is connected to incorrect WiFi network");
-                }
-            }
-        }
     }
 
     @Override
@@ -296,18 +262,13 @@ public class TeapotMainFragment extends Fragment {
                 }
                 break;
 
-            case REQUEST_WIFI_OFF:
-            case REQUEST_WIFI_ABSENT:
-            case REQUEST_WIFI_WRONG:
-                if (resultCode == Activity.RESULT_CANCELED) {
-                    Log.d(TAG, "dialogCancelButton called");
-                    getActivity().finish();
-                }
-                break;
-
             default:
                 break;
         }
+    }
+
+    public void CurrentWiFiState(boolean state) {
+        NetworkIsOk = state;
     }
 
     private void UpdateTemperatureColor(TextView mTextView, int temperature) {

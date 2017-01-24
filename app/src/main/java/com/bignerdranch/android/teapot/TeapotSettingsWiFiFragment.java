@@ -32,11 +32,27 @@ public class TeapotSettingsWiFiFragment extends Fragment {
         mWiFiNameEdit = (EditText) v.findViewById(R.id.WiFiSSID);
         mIpAddress = (TextView) v.findViewById(R.id.CurrentIpAddress);
 
-        data = new TeapotData(getContext());
+        data = new TeapotData();
+        // восстанавливаем данные
+        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
+        TeapotPreferences.TeapotReStoreData(data, getContext());
 
         mWiFiNameEdit.setText(data.getWiFiName());
         mIpAddress.setText(data.getWiFiIpAddress());
 
         return v;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // сохраняем данные
+        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
+        TeapotPreferences.TeapotStoreData(data, getContext());
     }
 }

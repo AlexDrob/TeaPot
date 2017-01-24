@@ -83,7 +83,7 @@ public class TeapotData {
         TeapotData.mWiFiIpAddress = mWiFiIpAddress;
     }
 
-    public TeapotData(Context context) {
+    public TeapotData() {
         mTargetTemperature = 70;
         mCurrentTemperature = (float)27.0;
         mCurrentMode = mode.ModeTurnOff;

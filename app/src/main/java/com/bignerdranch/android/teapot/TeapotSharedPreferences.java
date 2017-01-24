@@ -49,27 +49,27 @@ public class TeapotSharedPreferences {
         mPreferences = context.getSharedPreferences(TEAPOT_STORAGE_NAME, MODE_PRIVATE);
         SharedPreferences.Editor edit = mPreferences.edit();
 
-        if (mPreferences.getInt(TARGET_TEMPERATURE, data.getTargetTemperature()) != data.getTargetTemperature()) {
+        if (mPreferences.getInt(TARGET_TEMPERATURE, 0) != data.getTargetTemperature()) {
             edit.putInt(TARGET_TEMPERATURE, data.getTargetTemperature());
         }
-        if (mPreferences.getFloat(CURRENT_TEMPERATURE, data.getCurrentTemperature()) != data.getCurrentTemperature()) {
+        if (mPreferences.getFloat(CURRENT_TEMPERATURE, (float)0.0) != data.getCurrentTemperature()) {
             edit.putFloat(CURRENT_TEMPERATURE, data.getCurrentTemperature());
         }
-        if (mPreferences.getInt(TARGET_TEMPERATURE_MIN_LIMIT, data.getTargetTemperatureMinLimit()) != data.getTargetTemperatureMinLimit()) {
+        if (mPreferences.getInt(TARGET_TEMPERATURE_MIN_LIMIT, 0) != data.getTargetTemperatureMinLimit()) {
             edit.putInt(TARGET_TEMPERATURE_MIN_LIMIT, data.getTargetTemperatureMinLimit());
         }
-        if (mPreferences.getInt(TARGET_TEMPERATURE_MAX_LIMIT, data.getTargetTemperatureMaxLimit()) != data.getTargetTemperatureMaxLimit()) {
+        if (mPreferences.getInt(TARGET_TEMPERATURE_MAX_LIMIT, 0) != data.getTargetTemperatureMaxLimit()) {
             edit.putInt(TARGET_TEMPERATURE_MAX_LIMIT, data.getTargetTemperatureMaxLimit());
         }
 
-        if (data.getWiFiName().equals(mPreferences.getString(WIFI_NAME, data.getWiFiName())) == false) {
+        if (data.getWiFiName().equals(mPreferences.getString(WIFI_NAME, "")) == false) {
             edit.putString(WIFI_NAME, data.getWiFiName());
         }
-        if (data.getWiFiIpAddress().equals(mPreferences.getString(WIFI_IP_ADDRESS, data.getWiFiIpAddress())) == false) {
+        if (data.getWiFiIpAddress().equals(mPreferences.getString(WIFI_IP_ADDRESS, "")) == false) {
             edit.putString(WIFI_IP_ADDRESS, data.getWiFiIpAddress());
         }
 
-        if (ModeToInt(data.getCurrentMode()) != mPreferences.getInt(MODE, ModeToInt(data.getCurrentMode()))) {
+        if (ModeToInt(data.getCurrentMode()) != mPreferences.getInt(MODE, 0xFF)) {
             edit.putInt(MODE, ModeToInt(data.getCurrentMode()));
         }
 
