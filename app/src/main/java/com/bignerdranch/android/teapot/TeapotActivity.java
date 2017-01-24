@@ -141,7 +141,21 @@ public class TeapotActivity extends ActionBarActivity {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() called");
-        UdpTask.cancel(true);
+        if (NetworkIsOk == true) {
+            UdpTask.cancel(true);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed() called");
+        if (list_index != 0) {
+            list_index = 0;
+            ShowCurrentFragment(list_index);
+        } else {
+            // Otherwise defer to system default behavior.
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -203,10 +217,9 @@ public class TeapotActivity extends ActionBarActivity {
                         update = true;
                         data.setCurrentTemperature(CurrentTemperature);
                     }
-                    if (list_index == 0) {
-                        if (update == true) {
-                            ShowCurrentFragment(list_index);
-                        }
+                    if ((list_index == 0) & (update == true)) {
+                        TeapotMainFragment mMainFragment = (TeapotMainFragment) getSupportFragmentManager().findFragmentById(R.id.main_frame);
+                        //mMainFragment.UpdateModeAndTemperatures();
                     }
                 }
             });

@@ -40,6 +40,18 @@ public class TeapotSettingsWiFiFragment extends Fragment {
         mWiFiNameEdit.setText(data.getWiFiName());
         mIpAddress.setText(data.getWiFiIpAddress());
 
+        mWiFiNameEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+    /* When focus is lost check that the text field has valid values.
+    */
+                if (!hasFocus) {
+                    //validateInput(v);
+                }
+            }
+        });
+
         return v;
     }
 

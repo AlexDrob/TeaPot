@@ -267,6 +267,10 @@ public class TeapotMainFragment extends Fragment {
         }
     }
 
+    public void UpdateModeAndTemperatures() {
+
+    }
+
     private void UpdateTemperatureColor(TextView mTextView, int temperature) {
         int new_color = CalculateNewTemperatureColor(temperature);
         mTextView.setTextColor(new_color);
