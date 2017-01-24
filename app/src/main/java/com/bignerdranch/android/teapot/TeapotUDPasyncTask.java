@@ -31,6 +31,16 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
     private int OwnIpAddress;
     private DatagramSocket clientSocket;
 
+    public interface AsyncListener {
+        void UpdateInfo(String IpAddress, int mode, int target_temperature, int current_temperature);
+    }
+
+    AsyncListener mListener;
+
+    public void setUpdateListener(AsyncListener listener) {
+        this.mListener = listener;
+    }
+
     public void SetIpAddress(int OwnIpAddress) {
         this.OwnIpAddress = OwnIpAddress;
     }
@@ -82,13 +92,10 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
                             String IpAddress = String.valueOf(buf[0] & 0xff) + "." +
                                     String.valueOf(buf[1] & 0xff) + "." + String.valueOf(buf[2] & 0xff)
                                     + "." + String.valueOf(buf[3] & 0xff);
-                            Log.d(TAG, "Ip address " + IpAddress);
-                            Log.d(TAG, "Current mode " + mode);
-                            Log.d(TAG, "Target temperature " + target_temperature);
-                            Log.d(TAG, "Current temperature " + current_temperature);
+                            mListener.UpdateInfo(IpAddress, mode, target_temperature, current_temperature);
                         }
                     } catch (SocketTimeoutException e) {
-                        Log.d(TAG, "Socet timeout!");
+                        Log.d(TAG, "Socket's input buffer is empty!");
                         break;
                     }
                 }

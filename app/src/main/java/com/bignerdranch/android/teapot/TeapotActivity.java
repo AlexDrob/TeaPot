@@ -51,6 +51,7 @@ public class TeapotActivity extends ActionBarActivity {
 
     private int list_index;
     private TeapotUDPasyncTask UdpTask;
+    private TeapotData data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +165,7 @@ public class TeapotActivity extends ActionBarActivity {
             else {
                 Log.d(TAG, "Device is connected to WiFi network");
                 Log.d(TAG, "WiFi network name - " + mTeapotWiFi.TeapotSSIDnetwork());
-                TeapotData data = new TeapotData();
+                data = new TeapotData();
                 // восстанавливаем данные
                 TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
                 TeapotPreferences.TeapotReStoreData(data, getApplicationContext());
@@ -185,6 +186,30 @@ public class TeapotActivity extends ActionBarActivity {
         if (NetworkIsOk == true) {
             UdpTask = new TeapotUDPasyncTask();
             UdpTask.SetIpAddress(mTeapotWiFi.TeapotGetOwnIpAddress());
+            UdpTask.setUpdateListener(new TeapotUDPasyncTask.AsyncListener() {
+                public void UpdateInfo(String IpAddress, int mode, int target_temperature, int current_temperature) {
+                    Log.d(TAG, "Ip address " + IpAddress);
+                    Log.d(TAG, "Current mode " + mode);
+                    Log.d(TAG, "Target temperature " + target_temperature);
+                    Log.d(TAG, "Current temperature " + String.valueOf(current_temperature));
+                    float CurrentTemperature = (float)current_temperature / (float)10.0;
+                    Log.d(TAG, "Current temperature " + String.valueOf(CurrentTemperature));
+                    boolean update = false;
+                    if (data.getTargetTemperature() != target_temperature) {
+                        update = true;
+                        data.setTargetTemperature(target_temperature);
+                    }
+                    if (data.getCurrentTemperature() != CurrentTemperature) {
+                        update = true;
+                        data.setCurrentTemperature(CurrentTemperature);
+                    }
+                    if (list_index == 0) {
+                        if (update == true) {
+                            ShowCurrentFragment(list_index);
+                        }
+                    }
+                }
+            });
             UdpTask.execute();
         }
 
