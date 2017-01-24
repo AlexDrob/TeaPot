@@ -6,6 +6,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.ActionBarActivity;
@@ -26,6 +28,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.InetAddress;
+
 public class TeapotActivity extends ActionBarActivity {
 
     private static final String TAG = "TeapotActivity";
@@ -45,6 +50,7 @@ public class TeapotActivity extends ActionBarActivity {
     private boolean NetworkIsOk = false;
 
     private int list_index;
+    private TeapotUDPasyncTask UdpTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +95,6 @@ public class TeapotActivity extends ActionBarActivity {
         myDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorTopGround)));
-
     }
 
     @Override
@@ -135,6 +140,7 @@ public class TeapotActivity extends ActionBarActivity {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() called");
+        UdpTask.cancel(true);
     }
 
     @Override
@@ -175,6 +181,13 @@ public class TeapotActivity extends ActionBarActivity {
                 }
             }
         }
+
+        if (NetworkIsOk == true) {
+            UdpTask = new TeapotUDPasyncTask();
+            UdpTask.SetIpAddress(mTeapotWiFi.TeapotGetOwnIpAddress());
+            UdpTask.execute();
+        }
+
         ShowCurrentFragment(list_index);
     }
 

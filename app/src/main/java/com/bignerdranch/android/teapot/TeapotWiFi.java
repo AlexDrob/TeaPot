@@ -1,9 +1,14 @@
 package com.bignerdranch.android.teapot;
 
 import android.content.Context;
+import android.net.DhcpInfo;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.net.InetAddress;
 
 /**
  * Created by AREG on 19.01.2017.
