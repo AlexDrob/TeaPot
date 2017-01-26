@@ -2,6 +2,7 @@ package com.bignerdranch.android.teapot;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,30 +41,16 @@ public class TeapotSettingsWiFiFragment extends Fragment {
         mWiFiNameEdit.setText(data.getWiFiName());
         mIpAddress.setText(data.getWiFiIpAddress());
 
-        mWiFiNameEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-    /* When focus is lost check that the text field has valid values.
-    */
-                if (!hasFocus) {
-                    //validateInput(v);
-                }
-            }
-        });
-
         return v;
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroy() {
+        super.onDestroy();
         // сохраняем данные
+        if (data.getWiFiName().equals(mWiFiNameEdit.getText().toString()) == false) {
+            data.setWiFiName(mWiFiNameEdit.getText().toString());
+        }
         TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
         TeapotPreferences.TeapotStoreData(data, getContext());
     }

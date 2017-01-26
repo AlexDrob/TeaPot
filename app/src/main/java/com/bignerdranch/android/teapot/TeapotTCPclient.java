@@ -31,9 +31,8 @@ public class TeapotTCPclient {
     private static final String TAG = "TeapotTCPclient";
 
     private static final int SERVERPORT = 4024;
-    private static final String SERVER_IP = "192.168.1.103";
 
-    public boolean Create(mode Mode, int target_temperature) {
+    public boolean Create(mode Mode, int target_temperature, String SERVER_IP) {
 
         boolean result = false;
 

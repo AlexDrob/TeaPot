@@ -23,6 +23,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -83,6 +85,10 @@ public class TeapotActivity extends ActionBarActivity {
             }
 
             public void onDrawerOpened(View drawerView) {
+                // двумя строками ниже прячем клавиатуру, если она открыта
+                InputMethodManager imm = (InputMethodManager) getSystemService(TeapotActivity.this.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
                 getSupportActionBar().setTitle(myDrawerTitle);
                 // calling onPrepareOptionsMenu() to hide action bar icons
                 invalidateOptionsMenu();
@@ -201,25 +207,37 @@ public class TeapotActivity extends ActionBarActivity {
             UdpTask = new TeapotUDPasyncTask();
             UdpTask.SetIpAddress(mTeapotWiFi.TeapotGetOwnIpAddress());
             UdpTask.setUpdateListener(new TeapotUDPasyncTask.AsyncListener() {
-                public void UpdateInfo(String IpAddress, int mode, int target_temperature, int current_temperature) {
+                public void UpdateInfo(String IpAddress, int Mode, int target_temperature, int current_temperature) {
                     Log.d(TAG, "Ip address " + IpAddress);
-                    Log.d(TAG, "Current mode " + mode);
+                    Log.d(TAG, "Current mode " + Mode);
                     Log.d(TAG, "Target temperature " + target_temperature);
                     Log.d(TAG, "Current temperature " + String.valueOf(current_temperature));
                     float CurrentTemperature = (float)current_temperature / (float)10.0;
                     Log.d(TAG, "Current temperature " + String.valueOf(CurrentTemperature));
                     boolean update = false;
                     if (data.getTargetTemperature() != target_temperature) {
-                        update = true;
                         data.setTargetTemperature(target_temperature);
                     }
                     if (data.getCurrentTemperature() != CurrentTemperature) {
-                        update = true;
                         data.setCurrentTemperature(CurrentTemperature);
                     }
-                    if ((list_index == 0) & (update == true)) {
-                        TeapotMainFragment mMainFragment = (TeapotMainFragment) getSupportFragmentManager().findFragmentById(R.id.main_frame);
-                        //mMainFragment.UpdateModeAndTemperatures();
+                    if (IpAddress.equals(data.getWiFiIpAddress()) == false) {
+                        data.setWiFiIpAddress(IpAddress);
+                    }
+                    mode MODE = mode.ModeTurnOff;
+                    switch (Mode) {
+                        case 1:
+                            MODE = mode.ModeTurnOff;
+                            break;
+                        case 2:
+                            MODE = mode.ModeAuto;
+                            break;
+                        case 3:
+                            MODE = mode.ModeHeat;
+                            break;
+                    }
+                    if (MODE != data.getCurrentMode()) {
+                        data.setCurrentMode(MODE);
                     }
                 }
             });

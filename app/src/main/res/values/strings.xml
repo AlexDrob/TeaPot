@@ -28,6 +28,7 @@
     <string-array name="views_array">
         <item>Домой</item>
         <item>Настойка WiFi</item>
+        <item>Управление температурой</item>
         <item>Уведомления</item>
         <item>Цветовые темы</item>
         <item>Отправить лог</item>
@@ -39,5 +40,12 @@
 
     <string name="WiFiNameTitle">SSID WiFi в которой находится устройство</string>
     <string name="WiFiIpAddressTitle">Текущий Ip адрес устройства в сети</string>
+
+    <string name="NotificationModeChange">Включить оповещение об изменении режима</string>
+    <string name="NotificationTemperatureChange">Включить оповещение об изменении температуры</string>
+    <string name="NotificationSimmer">Включить оповещение когда чайник закипит</string>
+    <string name="NotificationRington">Оповещать звуком SMS</string>
+    <string name="NotificationVibration">Оповещать вибрацией</string>
+    <string name="NotificationPush">Оповещать уведомлением</string>
 
 </resources>

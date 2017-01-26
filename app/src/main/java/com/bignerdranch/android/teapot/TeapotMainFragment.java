@@ -18,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by AREG on 17.01.2017.
  */
@@ -31,6 +34,9 @@ public class TeapotMainFragment extends Fragment {
     private static final String DialogResendMode = "dialogResendMode";
     private static final String WIFI_STATE = "WiFi_state";
 
+    private Timer mTimer;
+    private TimerTask mTimerTask;
+
     private Button mTurnOffButton;
     private Button mAutoButton;
     private Button mHeatButton;
@@ -42,6 +48,10 @@ public class TeapotMainFragment extends Fragment {
     private TeapotData data;
 
     private boolean NetworkIsOk = false;
+
+    private int Targ_temp;
+    private float Cur_temp;
+    private mode Cur_mode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -213,6 +223,31 @@ public class TeapotMainFragment extends Fragment {
         // Отображаем текущую температуру
         ShowCurrentTemperature();
 
+        mTimer = new Timer();
+        mTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.d(TAG, "Five second tick!!!");
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (Targ_temp != data.getTargetTemperature()) {
+                            // Отображаем текущую целевую температуру
+                            ShowTargetTemperature();
+                        }
+                        if (Cur_temp != data.getCurrentTemperature()) {
+                            // Отображаем текущую температуру
+                            ShowCurrentTemperature();
+                        }
+                        if (Cur_mode != data.getCurrentMode()) {
+                            ViewCurrentMode();
+                        }
+                    }
+                });
+            }
+        };
+        mTimer.schedule(mTimerTask, 500, 5000);
+
         return v;
     }
 
@@ -230,6 +265,8 @@ public class TeapotMainFragment extends Fragment {
         // сохраняем данные
         TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
         TeapotPreferences.TeapotStoreData(data, getContext());
+        // остановливаем таймер
+        mTimer.cancel();
     }
 
     @Override
@@ -267,10 +304,6 @@ public class TeapotMainFragment extends Fragment {
         }
     }
 
-    public void UpdateModeAndTemperatures() {
-
-    }
-
     private void UpdateTemperatureColor(TextView mTextView, int temperature) {
         int new_color = CalculateNewTemperatureColor(temperature);
         mTextView.setTextColor(new_color);
@@ -280,18 +313,21 @@ public class TeapotMainFragment extends Fragment {
         switch (data.getCurrentMode())
         {
             case ModeTurnOff:
+                Cur_mode = mode.ModeTurnOff;
                 mTurnOffButton.setBackgroundResource(R.drawable.turn_on_button);
                 mAutoButton.setBackgroundResource(R.drawable.turn_off_button);
                 mHeatButton.setBackgroundResource(R.drawable.turn_off_button);
                 break;
 
             case ModeAuto:
+                Cur_mode = mode.ModeAuto;
                 mTurnOffButton.setBackgroundResource(R.drawable.turn_off_button);
                 mAutoButton.setBackgroundResource(R.drawable.turn_on_button);
                 mHeatButton.setBackgroundResource(R.drawable.turn_off_button);
                 break;
 
             case ModeHeat:
+                Cur_mode = mode.ModeHeat;
                 mTurnOffButton.setBackgroundResource(R.drawable.turn_off_button);
                 mAutoButton.setBackgroundResource(R.drawable.turn_off_button);
                 mHeatButton.setBackgroundResource(R.drawable.turn_on_button);
@@ -316,12 +352,14 @@ public class TeapotMainFragment extends Fragment {
 
     // Отображаем текущую целевую температуру
     private void ShowTargetTemperature() {
+        Targ_temp = data.getTargetTemperature();
         mTargetTemperatureView.setText(String.valueOf(data.getTargetTemperature()) + (char) 0x00B0);
         UpdateTemperatureColor(mTargetTemperatureView, data.getTargetTemperature());
     }
 
     // Отображаем текущую температуру
     private void ShowCurrentTemperature() {
+        Cur_temp = data.getCurrentTemperature();
         mCurrentTemperatureView.setText(String.valueOf(data.getCurrentTemperature()) + (char) 0x00B0);
         UpdateTemperatureColor(mCurrentTemperatureView, (int)data.getCurrentTemperature());
     }
@@ -336,6 +374,7 @@ public class TeapotMainFragment extends Fragment {
 
     private void SendTcpCommandToTeapot() {
         if (NetworkIsOk == true) {
+            Log.d(TAG, "123");
             TeapotTCPasyncTask TcpTask = new TeapotTCPasyncTask();
             TcpTask.SetActivity(getActivity());
             TcpTask.execute(data);

@@ -31,7 +31,7 @@ public class TeapotTCPasyncTask extends AsyncTask<TeapotData, Void, Boolean> {
 
         TeapotTCPclient sendTCP = new TeapotTCPclient();
 
-        return sendTCP.Create(data.getCurrentMode(), data.getTargetTemperature());
+        return sendTCP.Create(data.getCurrentMode(), data.getTargetTemperature(), data.getWiFiIpAddress());
     }
 
     protected void onPostExecute(Boolean result) {
