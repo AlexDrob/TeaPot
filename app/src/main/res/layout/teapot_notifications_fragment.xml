@@ -30,7 +30,7 @@
             android:padding="10dp"/>
 
         <CheckBox
-            android:id="@+id/тotificationTemperatureChange"
+            android:id="@+id/notificationTemperatureChange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/NotificationTemperatureChange"
@@ -38,13 +38,39 @@
             android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
             android:padding="10dp"/>
 
-        <RadioButton
+        <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/NotificationRington"
-            android:button="@null"
-            android:drawableRight="@android:drawable/btn_radio"
-            android:padding="10dp"/>
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="10dp">
+
+            <RadioButton
+                android:id="@+id/notificationRington"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/NotificationRington"
+                android:button="@null"
+                android:drawableRight="@android:drawable/btn_radio"
+                android:checked="true"/>
+
+            <RadioButton
+                android:id="@+id/notificationVibration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/NotificationVibration"
+                android:button="@null"
+                android:drawableRight="@android:drawable/btn_radio"/>
+
+            <RadioButton
+                android:id="@+id/notificationPush"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/NotificationPush"
+                android:button="@null"
+                android:drawableRight="@android:drawable/btn_radio"/>
+
+    </RadioGroup>
 
     </LinearLayout>
 </FrameLayout>

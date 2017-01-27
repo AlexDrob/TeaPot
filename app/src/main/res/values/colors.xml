@@ -4,7 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorBackGround">#FFF8DC</color>
+    <color name="colorBackGround2">#E0FFFF</color>
+    <color name="colorBackGround3">#DCDCDC</color>
     <color name="colorTopGround">#00FA9A</color>
+    <color name="colorTopGround2">#DAA520</color>
+    <color name="colorTopGround3">#00BFFF</color>
     <color name="list_divider">#5e5e5e</color>
     <color name="list_background">#FFF8DC</color>
     <color name="list_background_pressed">#ccc</color>

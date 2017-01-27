@@ -48,4 +48,7 @@
     <string name="NotificationVibration">Оповещать вибрацией</string>
     <string name="NotificationPush">Оповещать уведомлением</string>
 
+    <string name="Theme1">Тема 1</string>
+    <string name="Theme2">Тема 2</string>
+    <string name="Theme3">Тема 3</string>
 </resources>

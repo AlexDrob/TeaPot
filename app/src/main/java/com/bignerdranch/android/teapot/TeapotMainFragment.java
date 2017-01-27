@@ -3,6 +3,7 @@ package com.bignerdranch.android.teapot;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -377,7 +378,10 @@ public class TeapotMainFragment extends Fragment {
             Log.d(TAG, "123");
             TeapotTCPasyncTask TcpTask = new TeapotTCPasyncTask();
             TcpTask.SetActivity(getActivity());
-            TcpTask.execute(data);
+            if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
+                TcpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, data);
+            else
+                TcpTask.execute(data);
         }
     }
 }

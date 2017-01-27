@@ -250,7 +250,7 @@ public class TeapotActivity extends ActionBarActivity {
     private void ShowCurrentFragment(int index) {
         list_index = index;
         switch (index) {
-            case 0:
+            case 0: // главный экран
 
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(WIFI_STATE, NetworkIsOk);
@@ -264,7 +264,7 @@ public class TeapotActivity extends ActionBarActivity {
                         .commit();
                 //}
                 break;
-            case 1:
+            case 1: // окно ввода имени WiFi сети
                 FragmentManager fm1 = getSupportFragmentManager();
                 //Fragment fragment1 = fm1.findFragmentById(R.id.teapot_settings_wifi_fragment_container);
                 //if (fragment1 == null) {
@@ -273,7 +273,19 @@ public class TeapotActivity extends ActionBarActivity {
                         .commit();
 
                 break;
-            case 5:
+            case 3: // настройка уведомлений
+                FragmentManager fm2 = getSupportFragmentManager();
+                Fragment fragment2 = new TeapotNotificationFragment();
+                fm2.beginTransaction().replace(R.id.content_frame, fragment2)
+                        .commit();
+                break;
+            case 4: // настройка цвета
+                FragmentManager fm3 = getSupportFragmentManager();
+                Fragment fragment3 = new TeapotThemeFragment();
+                fm3.beginTransaction().replace(R.id.content_frame, fragment3)
+                        .commit();
+                break;
+            case 6:
                 TeapotActivity.this.finish();
                 break;
             default:

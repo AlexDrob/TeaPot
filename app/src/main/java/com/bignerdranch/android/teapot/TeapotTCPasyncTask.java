@@ -22,12 +22,19 @@ public class TeapotTCPasyncTask extends AsyncTask<TeapotData, Void, Boolean> {
         this.mActivity = mActivity;
     }
 
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        Log.d("TeapotTCPasyncTask", "TCP task has been started!");
+    }
+
     protected Boolean doInBackground(TeapotData... params) {
 
         TeapotData data = params[0];
 
         Log.d("TeapotTCPasyncTask", "TCP AcyncTack started!");
         Log.d("TeapotTCPasyncTask", String.valueOf(data.getTargetTemperature()));
+        Log.d("TeapotTCPasyncTask", String.valueOf(data.getWiFiIpAddress()));
 
         TeapotTCPclient sendTCP = new TeapotTCPclient();
 
