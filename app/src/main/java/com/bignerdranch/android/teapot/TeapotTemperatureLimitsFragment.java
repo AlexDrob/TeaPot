@@ -23,14 +23,20 @@ public class TeapotTemperatureLimitsFragment extends Fragment {
 
     private final static String TAG = "TeapotLimitsFragment";
 
+    private static final String DialogMinLimit = "dialogMinLimit";
+    private static final String DialogMaxLimit = "dialogMaxLimit";
+
     private final static int sMinLimit = 1;
     private final static int sMaxLimit = 2;
 
     private TextView mMinLimit;
     private TextView mMaxLimit;
     private LinearLayout mLinearLayout;
+    private NumberPicker TemperaturePicker;
 
     private TeapotData data;
+
+    private int source;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +58,9 @@ public class TeapotTemperatureLimitsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "call MinLimitOnClickListener");
-                ShowDialog(20, 99, 20, sMinLimit);
+                source = sMinLimit;
+                ShowDialog(data.getAbsTargetTemperatureMinLimit(),
+                        data.getTargetTemperatureMaxLimit(), data.getTargetTemperatureMinLimit());
             }
         });
 
@@ -60,7 +68,9 @@ public class TeapotTemperatureLimitsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "call MaxLimitOnClickListener");
-                ShowDialog(20, 99, 20, sMaxLimit);
+                source = sMaxLimit;
+                ShowDialog(data.getTargetTemperatureMinLimit(),
+                        data.getAbsTargetTemperatureMaxLimit(), data.getTargetTemperatureMaxLimit());
             }
         });
 
@@ -79,7 +89,7 @@ public class TeapotTemperatureLimitsFragment extends Fragment {
         return v;
     }
 
-    private void ShowDialog(int minTemperature, int maxTemperature, int currentTemperature, int source) {
+    private void ShowDialog(int minTemperature, int maxTemperature, int currentTemperature) {
         AlertDialog.Builder builder =  new AlertDialog.Builder(getActivity());
         if (source == sMinLimit) {
             builder.setTitle(R.string.SetMinLimit);
@@ -96,7 +106,12 @@ public class TeapotTemperatureLimitsFragment extends Fragment {
         builder.setPositiveButton(R.string.dialogOkButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                if (source == sMinLimit) {
+                    data.setTargetTemperatureMinLimit(TemperaturePicker.getValue());
+                }
+                if (source == sMaxLimit) {
+                    data.setTargetTemperatureMaxLimit(TemperaturePicker.getValue());
+                }
             }
         });
 
@@ -110,7 +125,7 @@ public class TeapotTemperatureLimitsFragment extends Fragment {
         AlertDialog alert = builder.create();
         alert.setCancelable(false);
 
-        NumberPicker TemperaturePicker = (NumberPicker) dialogView.findViewById(R.id.numberPicker1);
+        TemperaturePicker = (NumberPicker) dialogView.findViewById(R.id.numberPicker1);
         TemperaturePicker.setMaxValue(maxTemperature);
         TemperaturePicker.setMinValue(minTemperature);
         TemperaturePicker.setValue(currentTemperature);
