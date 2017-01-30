@@ -42,7 +42,8 @@
     <string name="WiFiIpAddressTitle">Текущий Ip адрес устройства в сети</string>
 
     <string name="NotificationModeChange">Включить оповещение об изменении режима</string>
-    <string name="NotificationTemperatureChange">Включить оповещение об изменении температуры</string>
+    <string name="NotificationTemperatureChange">Включить оповещение об изменении
+        температуры поддержания</string>
     <string name="NotificationSimmer">Включить оповещение когда чайник закипит</string>
     <string name="NotificationRington">Оповещать звуком SMS</string>
     <string name="NotificationVibration">Оповещать вибрацией</string>

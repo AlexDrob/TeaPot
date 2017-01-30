@@ -22,6 +22,10 @@ public class TeapotData {
     private static String mWiFiIpAddress;
 
     private static int sColorTheme;
+    private static boolean sSimmerNotification;
+    private static boolean sModeChangeNotification;
+    private static boolean sTemperatureChangeNotification;
+    private static int sNotificationMode;
 
     public static int getTargetTemperature() {
         return mTargetTemperature;
@@ -95,6 +99,38 @@ public class TeapotData {
         sColorTheme = colorTheme;
     }
 
+    public static int getNotificationMode() {
+        return sNotificationMode;
+    }
+
+    public static void setNotificationMode(int notificationMode) {
+        sNotificationMode = notificationMode;
+    }
+
+    public static boolean isSimmerNotification() {
+        return sSimmerNotification;
+    }
+
+    public static void setSimmerNotification(boolean simmerNotification) {
+        sSimmerNotification = simmerNotification;
+    }
+
+    public static boolean isModeChangeNotification() {
+        return sModeChangeNotification;
+    }
+
+    public static void setModeChangeNotification(boolean modeChangeNotification) {
+        sModeChangeNotification = modeChangeNotification;
+    }
+
+    public static boolean isTemperatureChangeNotification() {
+        return sTemperatureChangeNotification;
+    }
+
+    public static void setTemperatureChangeNotification(boolean temperatureChangeNotification) {
+        sTemperatureChangeNotification = temperatureChangeNotification;
+    }
+
     public static TeapotData get() {
         if (sTeapotData == null) {
             sTeapotData = new TeapotData();
@@ -112,5 +148,9 @@ public class TeapotData {
         mTargetTemperatureMaxLimit = mAbsTargetTemperatureMaxLimit;
 
         sColorTheme = 1;
+        sSimmerNotification = false;
+        sModeChangeNotification = false;
+        sTemperatureChangeNotification = false;
+        sNotificationMode = 1;
     }
 }

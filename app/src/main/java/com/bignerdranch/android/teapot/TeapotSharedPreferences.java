@@ -29,6 +29,10 @@ public class TeapotSharedPreferences {
     private final String MODE = "mode";
 
     private final String COLOR_THEME = "color_theme";
+    private final String SIMMER_NOTIFICATION = "simmer_notification";
+    private final String MODE_CHANGE_NOTIFICATION = "mode_change_notification";
+    private final String TEMPERATURE_CHANGE_NOTIFICATION = "temperature_change_notification";
+    private final String NOTIFICATION_MODE = "notification_mode";
 
     public void TeapotReStoreData(TeapotData data, Context context) {
 
@@ -46,6 +50,11 @@ public class TeapotSharedPreferences {
         data.setCurrentMode(IntToMode(mPreferences.getInt(MODE, ModeToInt(data.getCurrentMode()))));
 
         data.setColorTheme(mPreferences.getInt(COLOR_THEME, data.getColorTheme()));
+
+        data.setSimmerNotification(mPreferences.getBoolean(SIMMER_NOTIFICATION, data.isSimmerNotification()));
+        data.setModeChangeNotification(mPreferences.getBoolean(MODE_CHANGE_NOTIFICATION, data.isModeChangeNotification()));
+        data.setTemperatureChangeNotification(mPreferences.getBoolean(TEMPERATURE_CHANGE_NOTIFICATION, data.isTemperatureChangeNotification()));
+        data.setNotificationMode(mPreferences.getInt(NOTIFICATION_MODE, data.getNotificationMode()));
     }
 
     public void TeapotStoreData(TeapotData data, Context context) {
@@ -79,6 +88,18 @@ public class TeapotSharedPreferences {
 
         if (data.getColorTheme() != mPreferences.getInt(COLOR_THEME, 0)) {
             edit.putInt(COLOR_THEME, data.getColorTheme());
+        }
+        if (data.isSimmerNotification() != mPreferences.getBoolean(SIMMER_NOTIFICATION, true)) {
+            edit.putBoolean(SIMMER_NOTIFICATION, data.isSimmerNotification());
+        }
+        if (data.isModeChangeNotification() != mPreferences.getBoolean(MODE_CHANGE_NOTIFICATION, true)) {
+            edit.putBoolean(MODE_CHANGE_NOTIFICATION, data.isModeChangeNotification());
+        }
+        if (data.isTemperatureChangeNotification() != mPreferences.getBoolean(TEMPERATURE_CHANGE_NOTIFICATION, true)) {
+            edit.putBoolean(TEMPERATURE_CHANGE_NOTIFICATION, data.isTemperatureChangeNotification());
+        }
+        if (data.getNotificationMode() != mPreferences.getInt(NOTIFICATION_MODE, 0)) {
+            edit.putInt(NOTIFICATION_MODE, data.getNotificationMode());
         }
         edit.commit();
     }

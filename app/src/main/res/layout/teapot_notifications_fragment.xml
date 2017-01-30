@@ -51,8 +51,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/NotificationRington"
                 android:button="@null"
-                android:drawableRight="@android:drawable/btn_radio"
-                android:checked="true"/>
+                android:drawableRight="@android:drawable/btn_radio"/>
 
             <RadioButton
                 android:id="@+id/notificationVibration"
