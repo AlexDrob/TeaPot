@@ -28,6 +28,8 @@ public class TeapotSharedPreferences {
 
     private final String MODE = "mode";
 
+    private final String COLOR_THEME = "color_theme";
+
     public void TeapotReStoreData(TeapotData data, Context context) {
 
         mPreferences = context.getSharedPreferences(TEAPOT_STORAGE_NAME, MODE_PRIVATE);
@@ -42,6 +44,8 @@ public class TeapotSharedPreferences {
         data.setWiFiIpAddress(mPreferences.getString(WIFI_IP_ADDRESS, data.getWiFiIpAddress()));
 
         data.setCurrentMode(IntToMode(mPreferences.getInt(MODE, ModeToInt(data.getCurrentMode()))));
+
+        data.setColorTheme(mPreferences.getInt(COLOR_THEME, data.getColorTheme()));
     }
 
     public void TeapotStoreData(TeapotData data, Context context) {
@@ -73,6 +77,9 @@ public class TeapotSharedPreferences {
             edit.putInt(MODE, ModeToInt(data.getCurrentMode()));
         }
 
+        if (data.getColorTheme() != mPreferences.getInt(COLOR_THEME, 0)) {
+            edit.putInt(COLOR_THEME, data.getColorTheme());
+        }
         edit.commit();
     }
 

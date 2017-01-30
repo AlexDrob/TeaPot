@@ -8,6 +8,8 @@ import android.content.Context;
 
 public class TeapotData {
 
+    private static TeapotData sTeapotData;
+
     private static final int mAbsTargetTemperatureMinLimit = 20;
     private static final int mAbsTargetTemperatureMaxLimit = 99;
 
@@ -18,6 +20,8 @@ public class TeapotData {
     private static float mCurrentTemperature;
     private static String mWiFiName;
     private static String mWiFiIpAddress;
+
+    private static int sColorTheme;
 
     public static int getTargetTemperature() {
         return mTargetTemperature;
@@ -83,7 +87,22 @@ public class TeapotData {
         TeapotData.mWiFiIpAddress = mWiFiIpAddress;
     }
 
-    public TeapotData() {
+    public static int getColorTheme() {
+        return sColorTheme;
+    }
+
+    public static void setColorTheme(int colorTheme) {
+        sColorTheme = colorTheme;
+    }
+
+    public static TeapotData get() {
+        if (sTeapotData == null) {
+            sTeapotData = new TeapotData();
+        }
+        return sTeapotData;
+    }
+
+    private TeapotData() {
         mTargetTemperature = 70;
         mCurrentTemperature = (float)27.0;
         mCurrentMode = mode.ModeTurnOff;
@@ -91,5 +110,7 @@ public class TeapotData {
         mWiFiIpAddress = "192.168.1.103";
         mTargetTemperatureMinLimit = mAbsTargetTemperatureMinLimit;
         mTargetTemperatureMaxLimit = mAbsTargetTemperatureMaxLimit;
+
+        sColorTheme = 1;
     }
 }

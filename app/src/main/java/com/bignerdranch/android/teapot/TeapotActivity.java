@@ -63,6 +63,11 @@ public class TeapotActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teapot);
 
+        data = TeapotData.get();
+        // восстанавливаем данные
+        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
+        TeapotPreferences.TeapotReStoreData(data, getApplicationContext());
+
         list_index = 0;
         NetworkIsOk = false;
 
@@ -187,10 +192,6 @@ public class TeapotActivity extends ActionBarActivity {
             else {
                 Log.d(TAG, "Device is connected to WiFi network");
                 Log.d(TAG, "WiFi network name - " + mTeapotWiFi.TeapotSSIDnetwork());
-                data = new TeapotData();
-                // восстанавливаем данные
-                TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
-                TeapotPreferences.TeapotReStoreData(data, getApplicationContext());
                 String WiFiName = "\"" + data.getWiFiName() + "\"";
                 Log.d(TAG, "WiFi network name - " + WiFiName);
                 if (mTeapotWiFi.TeapotSSIDnetwork().equals(WiFiName)) {
@@ -314,6 +315,8 @@ public class TeapotActivity extends ActionBarActivity {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop() called");
+        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
+        TeapotPreferences.TeapotStoreData(data, getApplicationContext());
     }
 
     @Override

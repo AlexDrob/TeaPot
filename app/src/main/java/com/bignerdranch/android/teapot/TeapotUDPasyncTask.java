@@ -88,7 +88,7 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
                         if (packet.getLength() == 8) {
                             int mode = buf[4];
                             int target_temperature = buf[5];
-                            int current_temperature = (buf[6] << 8) + buf[7];
+                            int current_temperature = ((int)(buf[6] & 0xFF) * 256) + (int)(buf[7] & 0xFF);
                             String IpAddress = String.valueOf(buf[0] & 0xff) + "." +
                                     String.valueOf(buf[1] & 0xff) + "." + String.valueOf(buf[2] & 0xff)
                                     + "." + String.valueOf(buf[3] & 0xff);

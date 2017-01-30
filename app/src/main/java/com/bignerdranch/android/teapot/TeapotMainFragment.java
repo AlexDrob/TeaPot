@@ -77,10 +77,7 @@ public class TeapotMainFragment extends Fragment {
         Bundle bundle = this.getArguments();
         NetworkIsOk = bundle.getBoolean(WIFI_STATE);
 
-        data = new TeapotData();
-        // восстанавливаем данные
-        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
-        TeapotPreferences.TeapotReStoreData(data, getContext());
+        data = TeapotData.get();
 
         // найдем изображения кнопок
         mAutoButton = (Button) v.findViewById(R.id.auto_button);
@@ -263,9 +260,6 @@ public class TeapotMainFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() called");
-        // сохраняем данные
-        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
-        TeapotPreferences.TeapotStoreData(data, getContext());
         // остановливаем таймер
         mTimer.cancel();
     }

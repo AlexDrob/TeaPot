@@ -33,10 +33,7 @@ public class TeapotSettingsWiFiFragment extends Fragment {
         mWiFiNameEdit = (EditText) v.findViewById(R.id.WiFiSSID);
         mIpAddress = (TextView) v.findViewById(R.id.CurrentIpAddress);
 
-        data = new TeapotData();
-        // восстанавливаем данные
-        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
-        TeapotPreferences.TeapotReStoreData(data, getContext());
+        data = TeapotData.get();
 
         mWiFiNameEdit.setText(data.getWiFiName());
         mIpAddress.setText(data.getWiFiIpAddress());
@@ -51,7 +48,5 @@ public class TeapotSettingsWiFiFragment extends Fragment {
         if (data.getWiFiName().equals(mWiFiNameEdit.getText().toString()) == false) {
             data.setWiFiName(mWiFiNameEdit.getText().toString());
         }
-        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
-        TeapotPreferences.TeapotStoreData(data, getContext());
     }
 }
