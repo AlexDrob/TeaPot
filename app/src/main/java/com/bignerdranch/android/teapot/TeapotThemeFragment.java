@@ -21,6 +21,8 @@ public class TeapotThemeFragment extends Fragment {
     private TextView mTheme3;
     private LinearLayout mLinearLayout;
 
+    private TeapotData data;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,8 @@ public class TeapotThemeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.teapot_theme_fragment, container, false);
+
+        data = TeapotData.get();
 
         mTheme1 = (TextView) v.findViewById(R.id.theme1);
         mTheme2 = (TextView) v.findViewById(R.id.theme2);
@@ -42,6 +46,7 @@ public class TeapotThemeFragment extends Fragment {
                 mLinearLayout.setBackgroundResource(R.color.colorBackGround);
                 ((ActionBarActivity)getActivity()).getSupportActionBar().
                         setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorTopGround)));
+                data.setColorTheme(1);
             }
         };
 
@@ -51,6 +56,7 @@ public class TeapotThemeFragment extends Fragment {
                 mLinearLayout.setBackgroundResource(R.color.colorBackGround2);
                 ((ActionBarActivity)getActivity()).getSupportActionBar().
                         setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorTopGround2)));
+                data.setColorTheme(2);
             }
         };
 
@@ -60,12 +66,25 @@ public class TeapotThemeFragment extends Fragment {
                 mLinearLayout.setBackgroundResource(R.color.colorBackGround3);
                 ((ActionBarActivity)getActivity()).getSupportActionBar().
                         setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorTopGround3)));
+                data.setColorTheme(3);
             }
         };
 
         mTheme1.setOnClickListener(theme1);
         mTheme2.setOnClickListener(theme2);
         mTheme3.setOnClickListener(theme3);
+
+        switch (data.getColorTheme()) {
+            case 1:
+                mLinearLayout.setBackgroundResource(R.color.colorBackGround);
+                break;
+            case 2:
+                mLinearLayout.setBackgroundResource(R.color.colorBackGround2);
+                break;
+            case 3:
+                mLinearLayout.setBackgroundResource(R.color.colorBackGround3);
+                break;
+        }
 
         return v;
     }

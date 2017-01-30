@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,9 @@ public class TeapotMainFragment extends Fragment {
     private ImageButton mArrowRight;
     private TextView mTargetTemperatureView;
     private TextView mCurrentTemperatureView;
+    private FrameLayout mFrameLayout;
+    private LinearLayout mTopLinearLayout;
+    private LinearLayout mBottomLinearLayout;
 
     private TeapotData data;
 
@@ -67,6 +72,8 @@ public class TeapotMainFragment extends Fragment {
         View v = inflater.inflate(R.layout.teapot_main_fragment, container, false);
         Log.d(TAG, "onCreateView() called");
 
+        data = TeapotData.get();
+
         // Восстанавливаем значение текущей температуры
         if (savedInstanceState != null) {
             float currentTemperature = savedInstanceState.getFloat(CURRENT_TEMP, data.getCurrentTemperature());
@@ -76,8 +83,6 @@ public class TeapotMainFragment extends Fragment {
 
         Bundle bundle = this.getArguments();
         NetworkIsOk = bundle.getBoolean(WIFI_STATE);
-
-        data = TeapotData.get();
 
         // найдем изображения кнопок
         mAutoButton = (Button) v.findViewById(R.id.auto_button);
@@ -89,6 +94,33 @@ public class TeapotMainFragment extends Fragment {
         mTargetTemperatureView = (TextView) v.findViewById(R.id.target_temperature);
         // найдем изображение текста, который выводит текущую температуру в чайнике
         mCurrentTemperatureView = (TextView) v.findViewById(R.id.CurrentTemperature);
+        mFrameLayout = (FrameLayout) v.findViewById(R.id.main_frame);
+        mTopLinearLayout = (LinearLayout) v.findViewById(R.id.TopLinearLayout);
+        mBottomLinearLayout = (LinearLayout) v.findViewById(R.id.BottomLinearLayout);
+
+        switch (data.getColorTheme()) {
+            case 1:
+                mFrameLayout.setBackgroundResource(R.color.colorBackGround);
+                mTopLinearLayout.setBackgroundResource(R.color.colorTopGround);
+                mBottomLinearLayout.setBackgroundResource(R.color.colorTopGround);
+                mArrowLeft.setBackgroundResource(R.color.colorBackGround);
+                mArrowRight.setBackgroundResource(R.color.colorBackGround);
+                break;
+            case 2:
+                mFrameLayout.setBackgroundResource(R.color.colorBackGround2);
+                mTopLinearLayout.setBackgroundResource(R.color.colorTopGround2);
+                mBottomLinearLayout.setBackgroundResource(R.color.colorTopGround2);
+                mArrowLeft.setBackgroundResource(R.color.colorBackGround2);
+                mArrowRight.setBackgroundResource(R.color.colorBackGround2);
+                break;
+            case 3:
+                mFrameLayout.setBackgroundResource(R.color.colorBackGround3);
+                mTopLinearLayout.setBackgroundResource(R.color.colorTopGround3);
+                mBottomLinearLayout.setBackgroundResource(R.color.colorTopGround3);
+                mArrowLeft.setBackgroundResource(R.color.colorBackGround3);
+                mArrowRight.setBackgroundResource(R.color.colorBackGround3);
+                break;
+        }
 
         // обработаем нажатие на поле с целевой температурой
         View.OnLongClickListener TargetTemperatureButton = new View.OnLongClickListener() {

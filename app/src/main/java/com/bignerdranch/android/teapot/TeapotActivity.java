@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,6 +58,7 @@ public class TeapotActivity extends ActionBarActivity {
     private TeapotUDPasyncTask UdpTask;
     private TeapotData data;
 
+    private TextView mDrawerListItem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate() called");
@@ -79,6 +81,10 @@ public class TeapotActivity extends ActionBarActivity {
         myDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         myDrawerList = (ListView) findViewById(R.id.left_drawer);
 
+        LayoutInflater inflater = this.getLayoutInflater();
+        View listView = inflater.inflate(R.layout.drawer_list_item, null);
+        mDrawerListItem = (TextView) listView.findViewById(R.id.label);
+
         myDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, viewsNames));
 
         myDrawerToggle = new ActionBarDrawerToggle(this, myDrawerLayout,
@@ -97,6 +103,23 @@ public class TeapotActivity extends ActionBarActivity {
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
                 getSupportActionBar().setTitle(myDrawerTitle);
+
+                Log.d(TAG, "onDrawerOpened() called");
+                switch (data.getColorTheme()) {
+                    case 1:
+                        myDrawerList.setBackgroundResource(R.color.colorBackGround);
+                        mDrawerListItem.setBackgroundResource(R.color.colorBackGround);
+                        break;
+                    case 2:
+                        myDrawerList.setBackgroundResource(R.color.colorBackGround2);
+                        mDrawerListItem.setBackgroundResource(R.color.colorBackGround2);
+                        break;
+                    case 3:
+                        myDrawerList.setBackgroundResource(R.color.colorBackGround3);
+                        mDrawerListItem.setBackgroundResource(R.color.colorBackGround3);
+                        break;
+                }
+
                 // calling onPrepareOptionsMenu() to hide action bar icons
                 invalidateOptionsMenu();
             }
@@ -108,7 +131,20 @@ public class TeapotActivity extends ActionBarActivity {
 
         myDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorTopGround)));
+        switch (data.getColorTheme()) {
+            case 1:
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().
+                        getColor(R.color.colorTopGround)));
+                break;
+            case 2:
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().
+                        getColor(R.color.colorTopGround2)));
+                break;
+            case 3:
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().
+                        getColor(R.color.colorTopGround3)));
+                break;
+        }
     }
 
     @Override

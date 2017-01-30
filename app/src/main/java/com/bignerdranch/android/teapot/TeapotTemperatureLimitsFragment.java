@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ public class TeapotTemperatureLimitsFragment extends Fragment {
 
     private TextView mMinLimit;
     private TextView mMaxLimit;
+    private LinearLayout mLinearLayout;
 
     private TeapotData data;
 
@@ -40,8 +42,11 @@ public class TeapotTemperatureLimitsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.teapot_temperature_limits_fragment, container, false);
 
+        data = TeapotData.get();
+
         mMinLimit = (TextView) v.findViewById(R.id.min_limit);
         mMaxLimit = (TextView) v.findViewById(R.id.max_limit);
+        mLinearLayout = (LinearLayout) v.findViewById(R.id.LimitSettings);
 
         mMinLimit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +63,18 @@ public class TeapotTemperatureLimitsFragment extends Fragment {
                 ShowDialog(20, 99, 20, sMaxLimit);
             }
         });
+
+        switch (data.getColorTheme()) {
+            case 1:
+                mLinearLayout.setBackgroundResource(R.color.colorBackGround);
+                break;
+            case 2:
+                mLinearLayout.setBackgroundResource(R.color.colorBackGround2);
+                break;
+            case 3:
+                mLinearLayout.setBackgroundResource(R.color.colorBackGround3);
+                break;
+        }
 
         return v;
     }

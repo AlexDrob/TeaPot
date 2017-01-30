@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 /**
@@ -17,6 +18,11 @@ public class TeapotSettingsWiFiFragment extends Fragment {
 
     private EditText mWiFiNameEdit;
     private TextView mIpAddress;
+    private FrameLayout mFrameLayout;
+
+    public TextView getIpAddress() {
+        return mIpAddress;
+    }
 
     TeapotData data;
 
@@ -32,11 +38,24 @@ public class TeapotSettingsWiFiFragment extends Fragment {
 
         mWiFiNameEdit = (EditText) v.findViewById(R.id.WiFiSSID);
         mIpAddress = (TextView) v.findViewById(R.id.CurrentIpAddress);
+        mFrameLayout = (FrameLayout) v.findViewById(R.id.SettingsWiFi);
 
         data = TeapotData.get();
 
         mWiFiNameEdit.setText(data.getWiFiName());
         mIpAddress.setText(data.getWiFiIpAddress());
+
+        switch (data.getColorTheme()) {
+            case 1:
+                mFrameLayout.setBackgroundResource(R.color.colorBackGround);
+                break;
+            case 2:
+                mFrameLayout.setBackgroundResource(R.color.colorBackGround2);
+                break;
+            case 3:
+                mFrameLayout.setBackgroundResource(R.color.colorBackGround3);
+                break;
+        }
 
         return v;
     }
