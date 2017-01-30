@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.ActionBarActivity;
@@ -241,7 +243,10 @@ public class TeapotActivity extends ActionBarActivity {
                     }
                 }
             });
-            UdpTask.execute();
+            if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
+                UdpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            else
+                UdpTask.execute();
         }
 
         ShowCurrentFragment(list_index);
@@ -249,47 +254,35 @@ public class TeapotActivity extends ActionBarActivity {
 
     private void ShowCurrentFragment(int index) {
         list_index = index;
+        Fragment fragment = new TeapotMainFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         switch (index) {
             case 0: // главный экран
-
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(WIFI_STATE, NetworkIsOk);
-                FragmentManager fm = getSupportFragmentManager();
-                //Fragment fragment = fm.findFragmentById(R.id.content_frame);
-                //if (fragment == null) {
-                Fragment fragment = new TeapotMainFragment();
+                fragment = new TeapotMainFragment();
                 fragment.setArguments(bundle);
-
-                fm.beginTransaction().replace(R.id.content_frame, fragment)
-                        .commit();
-                //}
                 break;
             case 1: // окно ввода имени WiFi сети
-                FragmentManager fm1 = getSupportFragmentManager();
-                //Fragment fragment1 = fm1.findFragmentById(R.id.teapot_settings_wifi_fragment_container);
-                //if (fragment1 == null) {
-                Fragment fragment1 = new TeapotSettingsWiFiFragment();
-                fm1.beginTransaction().replace(R.id.content_frame, fragment1)
-                        .commit();
-
+                fragment = new TeapotSettingsWiFiFragment();
+                break;
+            case 2: // температурные приделы
+                fragment = new TeapotTemperatureLimitsFragment();
                 break;
             case 3: // настройка уведомлений
-                FragmentManager fm2 = getSupportFragmentManager();
-                Fragment fragment2 = new TeapotNotificationFragment();
-                fm2.beginTransaction().replace(R.id.content_frame, fragment2)
-                        .commit();
+                fragment = new TeapotNotificationFragment();
                 break;
             case 4: // настройка цвета
-                FragmentManager fm3 = getSupportFragmentManager();
-                Fragment fragment3 = new TeapotThemeFragment();
-                fm3.beginTransaction().replace(R.id.content_frame, fragment3)
-                        .commit();
+                fragment = new TeapotThemeFragment();
                 break;
             case 6:
                 TeapotActivity.this.finish();
                 break;
             default:
                 break;
+        }
+        if (index < 5) {
+            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         }
     }
 
