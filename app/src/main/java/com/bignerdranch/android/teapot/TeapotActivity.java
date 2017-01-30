@@ -2,6 +2,7 @@ package com.bignerdranch.android.teapot;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -135,14 +136,20 @@ public class TeapotActivity extends ActionBarActivity {
             case 1:
                 getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().
                         getColor(R.color.colorTopGround)));
+                myDrawerList.setBackgroundResource(R.color.colorBackGround);
+                mDrawerListItem.setBackgroundResource(R.color.colorBackGround);
                 break;
             case 2:
                 getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().
                         getColor(R.color.colorTopGround2)));
+                myDrawerList.setBackgroundResource(R.color.colorBackGround2);
+                mDrawerListItem.setBackgroundResource(R.color.colorBackGround2);
                 break;
             case 3:
                 getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().
                         getColor(R.color.colorTopGround3)));
+                myDrawerList.setBackgroundResource(R.color.colorBackGround3);
+                mDrawerListItem.setBackgroundResource(R.color.colorBackGround3);
                 break;
         }
     }
@@ -198,6 +205,10 @@ public class TeapotActivity extends ActionBarActivity {
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed() called");
+        if (list_index == 5) {
+            // сбрасываем отправку email
+            list_index = 0;
+        }
         if (list_index != 0) {
             list_index = 0;
             ShowCurrentFragment(list_index);
@@ -286,6 +297,10 @@ public class TeapotActivity extends ActionBarActivity {
                 UdpTask.execute();
         }
 
+        if (list_index == 5) {
+            // сбрасываем отправку email
+            list_index = 0;
+        }
         ShowCurrentFragment(list_index);
     }
 
@@ -312,6 +327,30 @@ public class TeapotActivity extends ActionBarActivity {
             case 4: // настройка цвета
                 fragment = new TeapotThemeFragment();
                 break;
+            case 5:
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+                emailIntent.setType("text/plain");
+                // Кому
+                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"khadi10@mail.ru"});
+                        //new String[] { address.getText().toString() });
+                // Зачем
+                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Log Teapot App");
+                        //subject.getText().toString());
+                // О чём
+                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Do something");
+                        //emailtext.getText().toString());
+                emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                // С чем
+                //emailIntent.putExtra(
+                //        android.content.Intent.EXTRA_STREAM,
+                //        Uri.parse("file://"
+                //                + Environment.getExternalStorageDirectory()
+                //                + "/Клипы/SOTY_ATHD.mp4"));
+                // Поехали!
+                startActivity(Intent.createChooser(emailIntent, "Отправка письма..."));
+                //Intent.createChooser(emailIntent, "Отправка письма...");
+                break;
             case 6:
                 TeapotActivity.this.finish();
                 break;
@@ -319,7 +358,11 @@ public class TeapotActivity extends ActionBarActivity {
                 break;
         }
         if (index < 5) {
-            fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            try {
+                fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+            } catch (IllegalStateException e) {
+                fragmentManager.beginTransaction().add(R.id.content_frame, fragment);
+            }
         }
     }
 
