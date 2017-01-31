@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -154,6 +155,8 @@ public class TeapotActivity extends ActionBarActivity {
                 mDrawerListItem.setBackgroundResource(R.color.colorBackGround3);
                 break;
         }
+        getSupportActionBar().setElevation(0);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //для портретного режима
     }
 
     @Override
@@ -337,18 +340,19 @@ public class TeapotActivity extends ActionBarActivity {
     }
 
     private void SendEmail() {
+        String MessageBody = "Текущее состояние системы:\r\n\r\n";
+        MessageBody += "Текущая температура " + String.valueOf(data.getCurrentTemperature())
+                + " градусов\r\n";
+        MessageBody += "Температура поддержания " + String.valueOf(data.getTargetTemperature())
+                + " градусов\r\n";
+        MessageBody += "WiFi сеть с устройством " + data.getWiFiName() + "\r\n";
+        MessageBody += "Текущий Ip адрес устройства " + data.getWiFiIpAddress() + "\r\n";
         final Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("text/plain");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"khadi10@mail.ru"});
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Log Teapot App");
-        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Do something");
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, MessageBody);
         emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        // С чем
-        //emailIntent.putExtra(
-        //        android.content.Intent.EXTRA_STREAM,
-        //        Uri.parse("file://"
-        //                + Environment.getExternalStorageDirectory()
-        //                + "/Клипы/SOTY_ATHD.mp4"));
         startActivity(Intent.createChooser(emailIntent, "Отправка письма..."));
     }
 

@@ -70,9 +70,7 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
         try {
             InetSocketAddress sa = new InetSocketAddress(UDP_PORT);
             DatagramChannel channel = DatagramChannel.open();
-            //DatagramSocket clientSocket = new DatagramSocket();
             clientSocket = channel.socket();
-
             clientSocket.setBroadcast(true);
             clientSocket.setReuseAddress(true);
             clientSocket.bind(sa);

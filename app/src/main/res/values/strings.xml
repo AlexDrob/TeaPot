@@ -31,7 +31,7 @@
         <item>Управление температурой</item>
         <item>Уведомления</item>
         <item>Цветовые темы</item>
-        <item>Отправить лог</item>
+        <item>Отправить данные</item>
         <item>Выход</item>
     </string-array>
     <string name="menu">Меню</string>
