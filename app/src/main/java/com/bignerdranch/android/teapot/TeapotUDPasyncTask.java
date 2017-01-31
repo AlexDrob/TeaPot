@@ -1,6 +1,11 @@
 package com.bignerdranch.android.teapot;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.DhcpInfo;
@@ -9,6 +14,8 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Vibrator;
 import android.speech.tts.Voice;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.View;
 
@@ -21,6 +28,8 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.channels.DatagramChannel;
+import java.sql.Time;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +45,7 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
     private int OwnIpAddress;
     private DatagramSocket clientSocket;
     private TeapotData data;
-
+    private int NOTIFY_ID;
     private Context mContext;
 
     public void SetIpAddress(int OwnIpAddress) {
@@ -52,6 +61,7 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
         super.onPreExecute();
         Log.d(TAG, "UDP task has been started!");
         data = TeapotData.get();
+        NOTIFY_ID = 0;
     }
 
     @Override
@@ -143,6 +153,10 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
                         PerformVibrate();
                         break;
                     case 3: // Notification
+                        PerformNotification(mContext.getResources().getString(R.string.
+                                TempChangeNotificationTitle), mContext.getResources().
+                                getString(R.string.TempChangeNotification) +
+                                String.valueOf(target_temperature));
                         break;
                 }
             }
@@ -155,15 +169,19 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
             data.setWiFiIpAddress(IpAddress);
         }
         mode MODE = mode.ModeTurnOff;
+        String New_mode = mContext.getResources().getString(R.string.ModeHeat);
         switch (Mode) {
             case 1:
                 MODE = mode.ModeTurnOff;
+                New_mode = mContext.getResources().getString(R.string.ModeOff);
                 break;
             case 2:
                 MODE = mode.ModeAuto;
+                New_mode = mContext.getResources().getString(R.string.ModeAuto);
                 break;
             case 3:
                 MODE = mode.ModeHeat;
+                New_mode = mContext.getResources().getString(R.string.ModeHeat);
                 break;
         }
         if (MODE != data.getCurrentMode()) {
@@ -177,6 +195,9 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
                         PerformVibrate();
                         break;
                     case 3: // Notification
+                        PerformNotification(mContext.getResources().getString(R.string.
+                                SimmerNotificationTitle), mContext.getResources().getString(
+                                R.string.SimmerNotification));
                         break;
                 }
             }
@@ -190,6 +211,9 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
                         PerformVibrate();
                         break;
                     case 3: // Notification
+                        PerformNotification(mContext.getResources().getString(R.string.
+                                ModeChangeNotificationTitle), mContext.getResources().getString(
+                                R.string.ModeChangeNotification) + New_mode);
                         break;
                 }
             }
@@ -208,5 +232,23 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone r = RingtoneManager.getRingtone(mContext, notification);
         r.play();
+    }
+
+    private void PerformNotification(String Title, String Body) {
+        Intent notificationIntent = new Intent(mContext, TeapotActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+        builder.setContentIntent(contentIntent)
+                .setContentTitle(Title)
+                .setSmallIcon(R.drawable.teapot)
+                .setContentText(Body);
+
+        Notification notification = builder.build();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
+        notificationManager.notify(NOTIFY_ID, notification);
+        NOTIFY_ID += 1;
     }
 }
