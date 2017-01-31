@@ -136,20 +136,20 @@ public class TeapotActivity extends ActionBarActivity {
 
         switch (data.getColorTheme()) {
             case 1:
-                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().
-                        getColor(R.color.colorTopGround)));
+                getSupportActionBar().setBackgroundDrawable(getResources().
+                        getDrawable(R.color.colorTopGround));
                 myDrawerList.setBackgroundResource(R.color.colorBackGround);
                 mDrawerListItem.setBackgroundResource(R.color.colorBackGround);
                 break;
             case 2:
-                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().
-                        getColor(R.color.colorTopGround2)));
+                getSupportActionBar().setBackgroundDrawable(getResources().
+                        getDrawable(R.color.colorTopGround2));
                 myDrawerList.setBackgroundResource(R.color.colorBackGround2);
                 mDrawerListItem.setBackgroundResource(R.color.colorBackGround2);
                 break;
             case 3:
-                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().
-                        getColor(R.color.colorTopGround3)));
+                getSupportActionBar().setBackgroundDrawable(getResources().
+                        getDrawable(R.color.colorTopGround3));
                 myDrawerList.setBackgroundResource(R.color.colorBackGround3);
                 mDrawerListItem.setBackgroundResource(R.color.colorBackGround3);
                 break;
