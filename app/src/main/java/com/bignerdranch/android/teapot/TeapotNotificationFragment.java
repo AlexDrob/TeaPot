@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -64,14 +65,7 @@ public class TeapotNotificationFragment extends Fragment {
                 break;
         }
 
-        if ((mNotificationSimmer.isChecked() == false) &
-                (mNotificationModeChange.isChecked() == false) &
-                (mNotificationTemperatureChange.isChecked() == false)) {
-            mRadioGroup.setEnabled(false);
-        }
-        else {
-            mRadioGroup.setEnabled(true);
-        }
+        UpdateRadioGroup();
 
         switch (data.getColorTheme()) {
             case 1:
@@ -85,6 +79,61 @@ public class TeapotNotificationFragment extends Fragment {
                 break;
         }
 
+        mNotificationSimmer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                data.setSimmerNotification(isChecked);
+                UpdateRadioGroup();
+            }
+        });
+
+        mNotificationModeChange.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                data.setModeChangeNotification(isChecked);
+                UpdateRadioGroup();
+            }
+        });
+
+        mNotificationTemperatureChange.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                data.setTemperatureChangeNotification(isChecked);
+                UpdateRadioGroup();
+            }
+        });
+
+        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (mNotificationRington.isChecked() == true) {
+                    data.setNotificationMode(1);
+                }
+                if (mNotificationVibration.isChecked() == true) {
+                    data.setNotificationMode(2);
+                }
+                if (mNotificationPush.isChecked() == true) {
+                    data.setNotificationMode(3);
+                }
+            }
+        });
         return v;
+    }
+
+    private void UpdateRadioGroup() {
+        if ((mNotificationSimmer.isChecked() == false) &
+                (mNotificationModeChange.isChecked() == false) &
+                (mNotificationTemperatureChange.isChecked() == false)) {
+            mRadioGroup.setEnabled(false);
+            mNotificationRington.setEnabled(false);
+            mNotificationVibration.setEnabled(false);
+            mNotificationPush.setEnabled(false);
+        }
+        else {
+            mRadioGroup.setEnabled(true);
+            mNotificationRington.setEnabled(true);
+            mNotificationVibration.setEnabled(true);
+            mNotificationPush.setEnabled(true);
+        }
     }
 }

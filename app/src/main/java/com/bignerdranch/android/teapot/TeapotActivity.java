@@ -1,6 +1,7 @@
 package com.bignerdranch.android.teapot;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -198,9 +199,6 @@ public class TeapotActivity extends ActionBarActivity {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() called");
-        if (NetworkIsOk == true) {
-            UdpTask.cancel(true);
-        }
     }
 
     @Override
@@ -255,47 +253,15 @@ public class TeapotActivity extends ActionBarActivity {
         }
 
         if (NetworkIsOk == true) {
-            UdpTask = new TeapotUDPasyncTask();
-            UdpTask.SetIpAddress(mTeapotWiFi.TeapotGetOwnIpAddress());
-            UdpTask.setUpdateListener(new TeapotUDPasyncTask.AsyncListener() {
-                public void UpdateInfo(String IpAddress, int Mode, int target_temperature, int current_temperature) {
-                    Log.d(TAG, "Ip address " + IpAddress);
-                    Log.d(TAG, "Current mode " + Mode);
-                    Log.d(TAG, "Target temperature " + target_temperature);
-                    Log.d(TAG, "Current temperature " + String.valueOf(current_temperature));
-                    float CurrentTemperature = (float)current_temperature / (float)10.0;
-                    Log.d(TAG, "Current temperature " + String.valueOf(CurrentTemperature));
-                    boolean update = false;
-                    if (data.getTargetTemperature() != target_temperature) {
-                        data.setTargetTemperature(target_temperature);
-                    }
-                    if (data.getCurrentTemperature() != CurrentTemperature) {
-                        data.setCurrentTemperature(CurrentTemperature);
-                    }
-                    if (IpAddress.equals(data.getWiFiIpAddress()) == false) {
-                        data.setWiFiIpAddress(IpAddress);
-                    }
-                    mode MODE = mode.ModeTurnOff;
-                    switch (Mode) {
-                        case 1:
-                            MODE = mode.ModeTurnOff;
-                            break;
-                        case 2:
-                            MODE = mode.ModeAuto;
-                            break;
-                        case 3:
-                            MODE = mode.ModeHeat;
-                            break;
-                    }
-                    if (MODE != data.getCurrentMode()) {
-                        data.setCurrentMode(MODE);
-                    }
-                }
-            });
-            if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
-                UdpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            else
-                UdpTask.execute();
+            if (UdpTask == null) {
+                UdpTask = new TeapotUDPasyncTask();
+                UdpTask.SetIpAddress(mTeapotWiFi.TeapotGetOwnIpAddress());
+                UdpTask.setContext(TeapotActivity.this);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                    UdpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                else
+                    UdpTask.execute();
+            }
         }
 
         if (list_index == 5) {
@@ -329,28 +295,7 @@ public class TeapotActivity extends ActionBarActivity {
                 fragment = new TeapotThemeFragment();
                 break;
             case 5:
-                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-
-                emailIntent.setType("text/plain");
-                // Кому
-                emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"khadi10@mail.ru"});
-                        //new String[] { address.getText().toString() });
-                // Зачем
-                emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Log Teapot App");
-                        //subject.getText().toString());
-                // О чём
-                emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Do something");
-                        //emailtext.getText().toString());
-                emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                // С чем
-                //emailIntent.putExtra(
-                //        android.content.Intent.EXTRA_STREAM,
-                //        Uri.parse("file://"
-                //                + Environment.getExternalStorageDirectory()
-                //                + "/Клипы/SOTY_ATHD.mp4"));
-                // Поехали!
-                startActivity(Intent.createChooser(emailIntent, "Отправка письма..."));
-                //Intent.createChooser(emailIntent, "Отправка письма...");
+                SendEmail();
                 break;
             case 6:
                 TeapotActivity.this.finish();
@@ -389,6 +334,22 @@ public class TeapotActivity extends ActionBarActivity {
                         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void SendEmail() {
+        final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"khadi10@mail.ru"});
+        emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Log Teapot App");
+        emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Do something");
+        emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // С чем
+        //emailIntent.putExtra(
+        //        android.content.Intent.EXTRA_STREAM,
+        //        Uri.parse("file://"
+        //                + Environment.getExternalStorageDirectory()
+        //                + "/Клипы/SOTY_ATHD.mp4"));
+        startActivity(Intent.createChooser(emailIntent, "Отправка письма..."));
     }
 
     @Override

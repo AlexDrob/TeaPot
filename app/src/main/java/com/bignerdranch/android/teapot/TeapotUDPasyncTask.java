@@ -1,8 +1,13 @@
 package com.bignerdranch.android.teapot;
 
+import android.content.Context;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.DhcpInfo;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.Vibrator;
 import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.View;
@@ -30,25 +35,23 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
 
     private int OwnIpAddress;
     private DatagramSocket clientSocket;
+    private TeapotData data;
 
-    public interface AsyncListener {
-        void UpdateInfo(String IpAddress, int mode, int target_temperature, int current_temperature);
-    }
-
-    AsyncListener mListener;
-
-    public void setUpdateListener(AsyncListener listener) {
-        this.mListener = listener;
-    }
+    private Context mContext;
 
     public void SetIpAddress(int OwnIpAddress) {
         this.OwnIpAddress = OwnIpAddress;
+    }
+
+    public void setContext(Context mContext) {
+        this.mContext = mContext;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         Log.d(TAG, "UDP task has been started!");
+        data = TeapotData.get();
     }
 
     @Override
@@ -84,18 +87,21 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
                 while (true) {
                     try {
                         clientSocket.receive(packet);
-                        Log.d(TAG, "Length: " + String.valueOf(packet.getLength()));
                         if (packet.getLength() == 8) {
-                            int mode = buf[4];
-                            int target_temperature = buf[5];
+                            int Mode = (buf[4] & 0xFF);
+                            int target_temperature = (buf[5] & 0xFF);
                             int current_temperature = ((int)(buf[6] & 0xFF) * 256) + (int)(buf[7] & 0xFF);
                             String IpAddress = String.valueOf(buf[0] & 0xff) + "." +
                                     String.valueOf(buf[1] & 0xff) + "." + String.valueOf(buf[2] & 0xff)
                                     + "." + String.valueOf(buf[3] & 0xff);
-                            mListener.UpdateInfo(IpAddress, mode, target_temperature, current_temperature);
+                            Log.d(TAG, "Ip address " + IpAddress);
+                            Log.d(TAG, "Current mode " + Mode);
+                            Log.d(TAG, "Target temperature " + target_temperature);
+                            float CurrentTemperature = (float)current_temperature / (float)10.0;
+                            Log.d(TAG, "Current temperature " + String.valueOf(CurrentTemperature));
+                            UpdateInfo(IpAddress, target_temperature, CurrentTemperature, Mode);
                         }
                     } catch (SocketTimeoutException e) {
-                        Log.d(TAG, "Socket's input buffer is empty!");
                         break;
                     }
                 }
@@ -122,5 +128,85 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
             e.printStackTrace();
         }
         Log.d(TAG, "UDP task has been stopped!");
+    }
+
+    private void UpdateInfo(String IpAddress, int target_temperature,
+                            float CurrentTemperature, int Mode) {
+        if (data.getTargetTemperature() != target_temperature) {
+            // оповестить об изменении температуры поддержания
+            if (data.isTemperatureChangeNotification() == true) {
+                switch (data.getNotificationMode()) {
+                    case 1: // SMS
+                        PerformSmsRingtone();
+                        break;
+                    case 2: // Vibration
+                        PerformVibrate();
+                        break;
+                    case 3: // Notification
+                        break;
+                }
+            }
+            data.setTargetTemperature(target_temperature);
+        }
+        if (data.getCurrentTemperature() != CurrentTemperature) {
+            data.setCurrentTemperature(CurrentTemperature);
+        }
+        if (IpAddress.equals(data.getWiFiIpAddress()) == false) {
+            data.setWiFiIpAddress(IpAddress);
+        }
+        mode MODE = mode.ModeTurnOff;
+        switch (Mode) {
+            case 1:
+                MODE = mode.ModeTurnOff;
+                break;
+            case 2:
+                MODE = mode.ModeAuto;
+                break;
+            case 3:
+                MODE = mode.ModeHeat;
+                break;
+        }
+        if (MODE != data.getCurrentMode()) {
+            // оповестить о том, что чайник закипел
+            if ((data.getCurrentMode() == mode.ModeHeat) & (data.isSimmerNotification() == true)) {
+                switch (data.getNotificationMode()) {
+                    case 1: // SMS
+                        PerformSmsRingtone();
+                        break;
+                    case 2: // Vibration
+                        PerformVibrate();
+                        break;
+                    case 3: // Notification
+                        break;
+                }
+            }
+            // оповестить о том, что изменился режим
+            if (data.isModeChangeNotification() == true) {
+                switch (data.getNotificationMode()) {
+                    case 1: // SMS
+                        PerformSmsRingtone();
+                        break;
+                    case 2: // Vibration
+                        PerformVibrate();
+                        break;
+                    case 3: // Notification
+                        break;
+                }
+            }
+            data.setCurrentMode(MODE);
+        }
+    }
+
+    private void PerformVibrate() {
+        // Get instance of Vibrator from current Context
+        Vibrator v = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 1000 milliseconds
+        v.vibrate(1000);
+    }
+
+    private void PerformSmsRingtone() {
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone r = RingtoneManager.getRingtone(mContext, notification);
+        r.play();
     }
 }
