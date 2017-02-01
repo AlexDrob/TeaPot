@@ -257,7 +257,6 @@ public class TeapotMainFragment extends Fragment {
         mTimerTask = new TimerTask() {
             @Override
             public void run() {
-                Log.d(TAG, "Five second tick!!!");
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -276,7 +275,7 @@ public class TeapotMainFragment extends Fragment {
                 });
             }
         };
-        mTimer.schedule(mTimerTask, 500, 5000);
+        mTimer.schedule(mTimerTask, 500, 10000);
 
         return v;
     }

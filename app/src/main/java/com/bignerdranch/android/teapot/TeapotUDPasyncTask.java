@@ -59,7 +59,6 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        Log.d(TAG, "UDP task has been started!");
         data = TeapotData.get();
         NOTIFY_ID = 0;
     }
@@ -89,33 +88,29 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
             // create a packet to receive
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
+            clientSocket.send(sendPacket);
+            // wait to receive the packet
             while (true) {
-                clientSocket.send(sendPacket);
-                // wait to receive the packet
-                while (true) {
-                    try {
-                        clientSocket.receive(packet);
-                        if (packet.getLength() == 8) {
-                            int Mode = (buf[4] & 0xFF);
-                            int target_temperature = (buf[5] & 0xFF);
-                            int current_temperature = ((int)(buf[6] & 0xFF) * 256) + (int)(buf[7] & 0xFF);
-                            String IpAddress = String.valueOf(buf[0] & 0xff) + "." +
-                                    String.valueOf(buf[1] & 0xff) + "." + String.valueOf(buf[2] & 0xff)
-                                    + "." + String.valueOf(buf[3] & 0xff);
-                            Log.d(TAG, "Ip address " + IpAddress);
-                            Log.d(TAG, "Current mode " + Mode);
-                            Log.d(TAG, "Target temperature " + target_temperature);
-                            float CurrentTemperature = (float)current_temperature / (float)10.0;
-                            Log.d(TAG, "Current temperature " + String.valueOf(CurrentTemperature));
-                            UpdateInfo(IpAddress, target_temperature, CurrentTemperature, Mode);
-                        }
-                    } catch (SocketTimeoutException e) {
-                        break;
+                try {
+                    clientSocket.receive(packet);
+                    if (packet.getLength() == 8) {
+                        int Mode = (buf[4] & 0xFF);
+                        int target_temperature = (buf[5] & 0xFF);
+                        int current_temperature = ((int)(buf[6] & 0xFF) * 256) + (int)(buf[7] & 0xFF);
+                        String IpAddress = String.valueOf(buf[0] & 0xff) + "." +
+                                String.valueOf(buf[1] & 0xff) + "." + String.valueOf(buf[2] & 0xff)
+                                + "." + String.valueOf(buf[3] & 0xff);
+                        Log.d(TAG, "Ip address " + IpAddress);
+                        Log.d(TAG, "Current mode " + Mode);
+                        Log.d(TAG, "Target temperature " + target_temperature);
+                        float CurrentTemperature = (float)current_temperature / (float)10.0;
+                        Log.d(TAG, "Current temperature " + String.valueOf(CurrentTemperature));
+                        UpdateInfo(IpAddress, target_temperature, CurrentTemperature, Mode);
                     }
+                } catch (SocketTimeoutException e) {
+                    break;
                 }
-                TimeUnit.SECONDS.sleep(10);
             }
-        } catch (InterruptedException e) {
             CloseSocket();
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,7 +130,6 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "UDP task has been stopped!");
     }
 
     private void UpdateInfo(String IpAddress, int target_temperature,
@@ -167,19 +161,15 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
             data.setWiFiIpAddress(IpAddress);
         }
         mode MODE = mode.ModeTurnOff;
-        String New_mode = mContext.getResources().getString(R.string.ModeHeat);
         switch (Mode) {
             case 1:
                 MODE = mode.ModeTurnOff;
-                New_mode = mContext.getResources().getString(R.string.ModeOff);
                 break;
             case 2:
                 MODE = mode.ModeAuto;
-                New_mode = mContext.getResources().getString(R.string.ModeAuto);
                 break;
             case 3:
                 MODE = mode.ModeHeat;
-                New_mode = mContext.getResources().getString(R.string.ModeHeat);
                 break;
         }
         if (MODE != data.getCurrentMode()) {
@@ -211,7 +201,7 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
                     case 3: // Notification
                         PerformNotification(mContext.getResources().getString(R.string.
                                 ModeChangeNotificationTitle), mContext.getResources().getString(
-                                R.string.ModeChangeNotification) + New_mode);
+                                R.string.ModeChangeNotification));
                         break;
                 }
             }

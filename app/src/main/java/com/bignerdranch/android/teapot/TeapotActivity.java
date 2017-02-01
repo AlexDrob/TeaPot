@@ -1,6 +1,7 @@
 package com.bignerdranch.android.teapot;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -59,7 +61,6 @@ public class TeapotActivity extends ActionBarActivity {
     private boolean NetworkIsOk = false;
 
     private int list_index;
-    private TeapotUDPasyncTask UdpTask;
     private TeapotData data;
 
     private TextView mDrawerListItem;
@@ -256,15 +257,7 @@ public class TeapotActivity extends ActionBarActivity {
         }
 
         if (NetworkIsOk == true) {
-            if (UdpTask == null) {
-                UdpTask = new TeapotUDPasyncTask();
-                UdpTask.SetIpAddress(mTeapotWiFi.TeapotGetOwnIpAddress());
-                UdpTask.setContext(TeapotActivity.this);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                    UdpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                else
-                    UdpTask.execute();
-            }
+            startService(new Intent(TeapotActivity.this, TeapotService.class));
         }
 
         if (list_index == 5) {
@@ -348,12 +341,17 @@ public class TeapotActivity extends ActionBarActivity {
         MessageBody += "WiFi сеть с устройством " + data.getWiFiName() + "\r\n";
         MessageBody += "Текущий Ip адрес устройства " + data.getWiFiIpAddress() + "\r\n";
         final Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setType("text/plain");
+        emailIntent.setType("message/rfc822");
         emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"khadi10@mail.ru"});
         emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Log Teapot App");
         emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, MessageBody);
         emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(Intent.createChooser(emailIntent, "Отправка письма..."));
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Отправка письма..."));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getApplicationContext(), "Не установлен почтовый клиент для отправки письма.",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

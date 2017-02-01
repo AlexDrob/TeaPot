@@ -59,12 +59,9 @@
     <string name="SetMaxLimit">Установка максимального порога температуры</string>
 
     <string name="SimmerNotificationTitle">Чайник закипел</string>
-    <string name="SimmerNotification">Чайник закипел и перешол на удержание температуры</string>
+    <string name="SimmerNotification">Чайник закипел (удержание)</string>
     <string name="TempChangeNotificationTitle">Температура изменилась</string>
-    <string name="TempChangeNotification">Температура изменилась и теперь </string>
+    <string name="TempChangeNotification">Температура поддержания изменилась</string>
     <string name="ModeChangeNotificationTitle">Режим изменился</string>
-    <string name="ModeChangeNotification">Теперь режим </string>
-    <string name="ModeHeat">нагрева</string>
-    <string name="ModeAuto">поддержания температуры</string>
-    <string name="ModeOff">выключено</string>
+    <string name="ModeChangeNotification">Режим работы изменился</string>
 </resources>
