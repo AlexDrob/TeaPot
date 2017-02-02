@@ -62,6 +62,7 @@ public class TeapotActivity extends ActionBarActivity {
 
     private int list_index;
     private TeapotData data;
+    private Intent teapot_service;
 
     private TextView mDrawerListItem;
     @Override
@@ -258,9 +259,8 @@ public class TeapotActivity extends ActionBarActivity {
             }
         }
 
-        if (NetworkIsOk == true) {
-            startService(new Intent(TeapotActivity.this, TeapotService.class));
-        }
+        teapot_service = new Intent(TeapotActivity.this, TeapotService.class);
+        startService(teapot_service);
 
         if (list_index == 5) {
             // сбрасываем отправку email
@@ -296,6 +296,7 @@ public class TeapotActivity extends ActionBarActivity {
                 SendEmail();
                 break;
             case 6:
+                stopService(teapot_service);
                 TeapotActivity.this.finish();
                 break;
             default:

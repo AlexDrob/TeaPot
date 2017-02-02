@@ -370,7 +370,7 @@ public class TeapotMainFragment extends Fragment {
         }
         else {
             color[0] = 0xFF; // red
-            color[1] = 0xFF - ((temperature - 60) * 6); // green
+            color[1] = 0xFF - ((temperature - 60) * 5); // green
             color[2] = 0; // blue
         }
         return Color.rgb(color[0],color[1],color[2]);

@@ -1,12 +1,16 @@
 package com.bignerdranch.android.teapot;
 
 import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,15 +28,22 @@ public class TeapotService extends Service {
     public void onCreate() {
         Log.i("Test", "Service: onCreate");
 
+        Intent notificationIntent = new Intent(this, TeapotActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.teapot)
-                .setContentTitle("Teapot");
-                //.setContentText(Body);
+                .setContentTitle("Teapot")
+                .setContentText("Приложение чайника работает")
+                .setContentIntent(pendingIntent);
         Notification notification;
         if (Build.VERSION.SDK_INT < 16)
             notification = builder.getNotification();
         else
             notification = builder.build();
+
+        notification.contentView = new RemoteViews(getPackageName(), R.layout.teapot_service_notification);
         startForeground(777, notification);
     }
 

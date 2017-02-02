@@ -64,4 +64,7 @@
     <string name="TempChangeNotification">Температура поддержания изменилась</string>
     <string name="ModeChangeNotificationTitle">Режим изменился</string>
     <string name="ModeChangeNotification">Режим работы изменился</string>
+
+    <string name="customnotificationtitle">Приложение TeaPot работает</string>
+    <string name="customnotificationtext">Нажмите чтобы открыть</string>
 </resources>
