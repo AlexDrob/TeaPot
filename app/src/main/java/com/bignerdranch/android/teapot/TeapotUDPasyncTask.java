@@ -56,11 +56,17 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
         this.mContext = mContext;
     }
 
+    public void SetData(TeapotData data) {
+        this.data = data;
+    }
+
+    public void SetNotifyNumber(int NOTIFY_ID) {
+        this.NOTIFY_ID = NOTIFY_ID;
+    }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        data = TeapotData.get();
-        NOTIFY_ID = 0;
     }
 
     @Override
@@ -236,7 +242,10 @@ public class TeapotUDPasyncTask extends AsyncTask<Void, Void, Void> {
         Notification notification = builder.build();
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
+        if (NOTIFY_ID == 777) {
+            // 777 используется для Notification сервиса
+            NOTIFY_ID = 778;
+        }
         notificationManager.notify(NOTIFY_ID, notification);
-        NOTIFY_ID += 1;
     }
 }

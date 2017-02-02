@@ -1,5 +1,6 @@
 package com.bignerdranch.android.teapot;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -17,6 +18,23 @@ public class TeapotService extends Service {
     private TeapotData data;
     private Timer mTimer;
     private TeapotUDPasyncTask UdpTask;
+    private int NOTIFY_ID;
+
+    @Override
+    public void onCreate() {
+        Log.i("Test", "Service: onCreate");
+
+        Notification.Builder builder = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.teapot)
+                .setContentTitle("Teapot");
+                //.setContentText(Body);
+        Notification notification;
+        if (Build.VERSION.SDK_INT < 16)
+            notification = builder.getNotification();
+        else
+            notification = builder.build();
+        startForeground(777, notification);
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -35,6 +53,8 @@ public class TeapotService extends Service {
                             UdpTask = new TeapotUDPasyncTask();
                             UdpTask.SetIpAddress(mTeapotWiFi.TeapotGetOwnIpAddress());
                             UdpTask.setContext(getApplicationContext());
+                            UdpTask.SetData(data);
+                            UdpTask.SetNotifyNumber(NOTIFY_ID++);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
                                 UdpTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             else

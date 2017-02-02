@@ -89,13 +89,16 @@ public class TeapotSharedPreferences {
         if (data.getColorTheme() != mPreferences.getInt(COLOR_THEME, 0)) {
             edit.putInt(COLOR_THEME, data.getColorTheme());
         }
-        if (data.isSimmerNotification() != mPreferences.getBoolean(SIMMER_NOTIFICATION, true)) {
+        if (data.isSimmerNotification() != mPreferences.
+                getBoolean(SIMMER_NOTIFICATION, !data.isSimmerNotification())) {
             edit.putBoolean(SIMMER_NOTIFICATION, data.isSimmerNotification());
         }
-        if (data.isModeChangeNotification() != mPreferences.getBoolean(MODE_CHANGE_NOTIFICATION, true)) {
+        if (data.isModeChangeNotification() != mPreferences.
+                getBoolean(MODE_CHANGE_NOTIFICATION, !data.isModeChangeNotification())) {
             edit.putBoolean(MODE_CHANGE_NOTIFICATION, data.isModeChangeNotification());
         }
-        if (data.isTemperatureChangeNotification() != mPreferences.getBoolean(TEMPERATURE_CHANGE_NOTIFICATION, true)) {
+        if (data.isTemperatureChangeNotification() != mPreferences.
+                getBoolean(TEMPERATURE_CHANGE_NOTIFICATION, !data.isTemperatureChangeNotification())) {
             edit.putBoolean(TEMPERATURE_CHANGE_NOTIFICATION, data.isTemperatureChangeNotification());
         }
         if (data.getNotificationMode() != mPreferences.getInt(NOTIFICATION_MODE, 0)) {

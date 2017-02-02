@@ -203,6 +203,8 @@ public class TeapotActivity extends ActionBarActivity {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause() called");
+        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
+        TeapotPreferences.TeapotStoreData(data, getApplicationContext());
     }
 
     @Override
@@ -358,8 +360,6 @@ public class TeapotActivity extends ActionBarActivity {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop() called");
-        TeapotSharedPreferences TeapotPreferences = new TeapotSharedPreferences();
-        TeapotPreferences.TeapotStoreData(data, getApplicationContext());
     }
 
     @Override

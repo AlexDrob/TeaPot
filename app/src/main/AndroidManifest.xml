@@ -22,7 +22,8 @@
 
         <service
             android:name=".TeapotService"
-            android:enabled="true">
+            android:enabled="true"
+            android:stopWithTask="false">
         </service>
     </application>
 
