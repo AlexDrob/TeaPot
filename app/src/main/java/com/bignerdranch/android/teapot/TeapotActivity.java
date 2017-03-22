@@ -2,61 +2,30 @@ package com.bignerdranch.android.teapot;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.DhcpInfo;
-import android.net.Uri;
-import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.net.InetAddress;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 public class TeapotActivity extends ActionBarActivity {
 
     private static final String TAG = "TeapotActivity";
     private static final String WIFI_STATE = "WiFi_state";
-
-    private DrawerLayout myDrawerLayout;
-    private ListView myDrawerList;
-    private ActionBarDrawerToggle myDrawerToggle;
-
-    // navigation drawer title
-    private CharSequence myDrawerTitle;
-    // used to store app title
-    private CharSequence myTitle;
-
-    private String[] viewsNames;
 
     private boolean NetworkIsOk = false;
 
@@ -64,7 +33,9 @@ public class TeapotActivity extends ActionBarActivity {
     private TeapotData data;
     private Intent teapot_service;
 
-    private TextView mDrawerListItem;
+    private Toolbar mToolbar;
+    private Drawer mNavigationDrawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate() called");
@@ -79,125 +50,72 @@ public class TeapotActivity extends ActionBarActivity {
         list_index = 0;
         NetworkIsOk = false;
 
-        myTitle =  getTitle();
-        myDrawerTitle = getResources().getString(R.string.menu);
-
-        // load slide menu items
-        viewsNames = getResources().getStringArray(R.array.views_array);
-        myDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        myDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        View listView = inflater.inflate(R.layout.drawer_list_item, null);
-        mDrawerListItem = (TextView) listView.findViewById(R.id.label);
-
-        myDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, viewsNames));
-
-        myDrawerToggle = new ActionBarDrawerToggle(this, myDrawerLayout,
-                R.string.open_menu,
-                R.string.close_menu
-        ) {
-            public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(myTitle);
-                // calling onPrepareOptionsMenu() to show action bar icons
-                invalidateOptionsMenu();
-            }
-
-            public void onDrawerOpened(View drawerView) {
-                // двумя строками ниже прячем клавиатуру, если она открыта
-                InputMethodManager imm = (InputMethodManager) getSystemService(TeapotActivity.this.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-                getSupportActionBar().setTitle(myDrawerTitle);
-
-                Log.d(TAG, "onDrawerOpened() called");
-                switch (data.getColorTheme()) {
-                    case 1:
-                        myDrawerList.setBackgroundResource(R.color.colorBackGround);
-                        mDrawerListItem.setBackgroundResource(R.color.colorBackGround);
-                        break;
-                    case 2:
-                        myDrawerList.setBackgroundResource(R.color.colorBackGround2);
-                        mDrawerListItem.setBackgroundResource(R.color.colorBackGround2);
-                        break;
-                    case 3:
-                        myDrawerList.setBackgroundResource(R.color.colorBackGround3);
-                        mDrawerListItem.setBackgroundResource(R.color.colorBackGround3);
-                        break;
-                }
-
-                // calling onPrepareOptionsMenu() to hide action bar icons
-                invalidateOptionsMenu();
-            }
-        };
-        myDrawerLayout.setDrawerListener(myDrawerToggle);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        //create the drawer and remember the `Drawer` result object
+        mNavigationDrawer = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(mToolbar)
+                .withActionBarDrawerToggle(true)
+                .withHeader(R.layout.drawer_header)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_home).withIcon(FontAwesome.Icon.faw_home).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog).withIdentifier(2),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_temperature).withIcon(FontAwesome.Icon.faw_thermometer_half).withIdentifier(3),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_notifications).withIcon(FontAwesome.Icon.faw_comment).withIdentifier(4),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_color_themes).withIcon(FontAwesome.Icon.faw_cogs).withIdentifier(5),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_send).withIcon(FontAwesome.Icon.faw_envelope).withIdentifier(6),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_exit).withIcon(FontAwesome.Icon.faw_sign_out).withIdentifier(7)
+                )
+                .withOnDrawerListener(new Drawer.OnDrawerListener() {
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        // Скрываем клавиатуру при открытии Navigation Drawer
+                        InputMethodManager inputMethodManager = (InputMethodManager) TeapotActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(TeapotActivity.this.getCurrentFocus().getWindowToken(), 0);
+                    }
 
-        myDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                    }
+
+                    @Override
+                    public void onDrawerSlide (View drawerView, float slideOffset)
+                    {
+
+                    }
+                })
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        Log.d(TAG, "position: " + String.valueOf(position));
+                        if (position != 0) {
+                            ShowCurrentFragment(position - 1);
+                        }
+                        mNavigationDrawer.closeDrawer();
+                        return true;
+                    }
+                })
+                .build();
 
         switch (data.getColorTheme()) {
             case 1:
                 getSupportActionBar().setBackgroundDrawable(getResources().
                         getDrawable(R.color.colorTopGround));
-                myDrawerList.setBackgroundResource(R.color.colorBackGround);
-                mDrawerListItem.setBackgroundResource(R.color.colorBackGround);
                 break;
             case 2:
                 getSupportActionBar().setBackgroundDrawable(getResources().
                         getDrawable(R.color.colorTopGround2));
-                myDrawerList.setBackgroundResource(R.color.colorBackGround2);
-                mDrawerListItem.setBackgroundResource(R.color.colorBackGround2);
                 break;
             case 3:
                 getSupportActionBar().setBackgroundDrawable(getResources().
                         getDrawable(R.color.colorTopGround3));
-                myDrawerList.setBackgroundResource(R.color.colorBackGround3);
-                mDrawerListItem.setBackgroundResource(R.color.colorBackGround3);
                 break;
         }
         getSupportActionBar().setElevation(0);
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); //для портретного режима
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        myDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        myDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (myDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        // Handle your other action bar items...
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(
-                AdapterView<?> parent, View view, int position, long id
-        ) {
-            // display view for selected nav drawer item
-            Log.d(TAG, "tap on nav drawer item " + String.valueOf(position));
-
-            myDrawerLayout.closeDrawers();
-
-            ShowCurrentFragment(position);
-        }
     }
 
     @Override
@@ -211,11 +129,12 @@ public class TeapotActivity extends ActionBarActivity {
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed() called");
-        if (list_index == 5) {
+        if(mNavigationDrawer.isDrawerOpen()){
+            mNavigationDrawer.closeDrawer();
+        } else if (list_index == 5) {
             // сбрасываем отправку email
             list_index = 0;
-        }
-        if (list_index != 0) {
+        } else if (list_index != 0) {
             list_index = 0;
             ShowCurrentFragment(list_index);
         } else {
@@ -356,17 +275,4 @@ public class TeapotActivity extends ActionBarActivity {
                     Toast.LENGTH_LONG).show();
         }
     }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop() called");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy() called");
-    }
-
 }

@@ -25,15 +25,13 @@
         Проверьте устойство и WiFi сеть</string>
 
     <string name="action_settings">Settings</string>
-    <string-array name="views_array">
-        <item>Домой</item>
-        <item>Настойка WiFi</item>
-        <item>Управление температурой</item>
-        <item>Уведомления</item>
-        <item>Цветовые темы</item>
-        <item>Отправить данные</item>
-        <item>Выход</item>
-    </string-array>
+    <string name="drawer_item_home">Домой</string>
+    <string name="drawer_item_settings">Настойка Wi-Fi</string>
+    <string name="drawer_item_temperature">Управление температурой</string>
+    <string name="drawer_item_notifications">Уведомления</string>
+    <string name="drawer_item_color_themes">Цветовые темы</string>
+    <string name="drawer_item_send">Отправить данные</string>
+    <string name="drawer_item_exit">Выход</string>
     <string name="menu">Меню</string>
     <string name="open_menu">Open</string>
     <string name="close_menu">Close</string>
